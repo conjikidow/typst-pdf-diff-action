@@ -1,0 +1,194 @@
+name: 'Typst PDF Diff Action'
+description: >-
+  Build Typst PDFs for base and head revisions, generate PDF diffs, upload
+  artifacts, and optionally update a pull request comment.
+author: 'conjikidow'
+
+inputs:
+  target-files:
+    description: 'Space-separated Typst entrypoint files to compile.'
+    required: true
+  typst-version:
+    description: 'The Typst version to install.'
+    required: false
+    default: 'latest'
+  github-token:
+    description: >-
+      The GitHub token for checkout, artifact upload, and optional comment
+      updates.
+    required: false
+    default: ${{ github.token }}
+  submodules:
+    description: >-
+      Submodule mode passed to actions/checkout. Use false, true, or recursive.
+    required: false
+    default: 'false'
+  head-ref:
+    description: >-
+      The head revision to compare. Defaults to the pull request head SHA or
+      github.sha.
+    required: false
+    default: ''
+  base-ref:
+    description: >-
+      The base revision to compare. Defaults to the pull request base SHA or
+      github.event.before.
+    required: false
+    default: ''
+  post-comment:
+    description: 'Whether to update a pull request comment with diff results.'
+    required: false
+    default: 'true'
+  comment-mode:
+    description: 'Comment update mode. Supported values are replace and append.'
+    required: false
+    default: 'replace'
+  fail-on-comment-error:
+    description: 'Whether to fail the action when comment updates fail.'
+    required: false
+    default: 'false'
+  upload-artifacts:
+    description: 'Whether to upload head and diff PDFs as workflow artifacts.'
+    required: false
+    default: 'true'
+
+outputs:
+  has-diff:
+    description: '`true` when at least one target file has a PDF diff.'
+    value: ${{ steps.generate-diff.outputs.has_diff }}
+  head-artifact-url:
+    description: >-
+      The uploaded head PDF artifact URL when artifact upload is enabled.
+    value: ${{ steps.upload-head-pdfs.outputs.artifact-url }}
+  diff-artifact-url:
+    description: >-
+      The uploaded diff PDF artifact URL when a diff artifact is uploaded.
+    value: ${{ steps.upload-diff-pdfs.outputs.artifact-url }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Check runner platform
+      shell: bash
+      run: |
+        if [ "${RUNNER_OS}" != 'Linux' ]; then
+          echo '::error title=Unsupported runner::' \
+            'This action currently supports Linux runners only.'
+          exit 1
+        fi
+
+    - name: Resolve comparison revisions
+      id: resolve-refs
+      shell: bash
+      run: bash "${{ github.action_path }}/src/resolve-refs.sh"
+      env:
+        INPUT_HEAD_REF: ${{ inputs.head-ref }}
+        INPUT_BASE_REF: ${{ inputs.base-ref }}
+        GITHUB_EVENT_NAME: ${{ github.event_name }}
+        GITHUB_SHA: ${{ github.sha }}
+        GITHUB_EVENT_BEFORE: ${{ github.event.before }}
+        PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+
+    - name: Checkout the head revision
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      with:
+        path: head-src
+        ref: ${{ steps.resolve-refs.outputs.head_ref }}
+        submodules: ${{ inputs.submodules }}
+        token: ${{ inputs.github-token }}
+        fetch-depth: 1
+        persist-credentials: false
+
+    - name: Checkout the base revision
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      with:
+        path: base-src
+        ref: ${{ steps.resolve-refs.outputs.base_ref }}
+        submodules: ${{ inputs.submodules }}
+        token: ${{ inputs.github-token }}
+        fetch-depth: 1
+        persist-credentials: false
+
+    - name: Install Typst
+      uses: typst-community/setup-typst@63ac138db421d586de61f7f5ac3bcef6a2e6c78c # v5.1.0
+      with:
+        typst-version: ${{ inputs.typst-version }}
+
+    - name: Install PDF diff tools
+      shell: bash
+      run: bash "${{ github.action_path }}/src/install-pdf-diff-tools.sh"
+
+    - name: Build head PDFs
+      shell: bash
+      run: bash "${{ github.action_path }}/src/build-pdfs.sh"
+      env:
+        TARGET_FILES: ${{ inputs.target-files }}
+        SOURCE_DIR: head-src
+        OUTPUT_DIR: build/head
+
+    - name: Build base PDFs
+      shell: bash
+      run: bash "${{ github.action_path }}/src/build-pdfs.sh"
+      env:
+        TARGET_FILES: ${{ inputs.target-files }}
+        SOURCE_DIR: base-src
+        OUTPUT_DIR: build/base
+
+    - name: Generate PDF diff
+      id: generate-diff
+      shell: bash
+      run: bash "${{ github.action_path }}/src/generate-diff.sh"
+      env:
+        TARGET_FILES: ${{ inputs.target-files }}
+        BASE_DIR: build/base
+        HEAD_DIR: build/head
+        DIFF_DIR: build/diff
+        META_DIR: build/meta
+
+    - name: Upload head PDFs artifact
+      id: upload-head-pdfs
+      if: ${{ inputs.upload-artifacts == 'true' }}
+      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+      with:
+        name: typst-head-pdfs
+        path: build/head/**/*.pdf
+        if-no-files-found: error
+
+    - name: Upload diff PDFs artifact
+      id: upload-diff-pdfs
+      if: ${{ inputs.upload-artifacts == 'true' && steps.generate-diff.outputs.has_diff == 'true' }}
+      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+      with:
+        name: typst-diff-pdfs
+        path: build/diff/**/*.pdf
+        if-no-files-found: error
+
+    - name: Build PR comment body
+      if: ${{ inputs.post-comment == 'true' }}
+      shell: bash
+      run: bash "${{ github.action_path }}/src/build-comment.sh"
+      env:
+        RESULT_TSV: ${{ steps.generate-diff.outputs.result_tsv }}
+        HAS_DIFF: ${{ steps.generate-diff.outputs.has_diff }}
+        HEAD_REF: ${{ steps.resolve-refs.outputs.head_ref }}
+        BASE_REF: ${{ steps.resolve-refs.outputs.base_ref }}
+        HEAD_ARTIFACT_URL: ${{ steps.upload-head-pdfs.outputs.artifact-url }}
+        DIFF_ARTIFACT_URL: ${{ steps.upload-diff-pdfs.outputs.artifact-url }}
+
+    - name: Update PR comment
+      if: ${{ inputs.post-comment == 'true' }}
+      shell: bash
+      run: bash "${{ github.action_path }}/src/post-comment.sh"
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        COMMENT_MODE: ${{ inputs.comment-mode }}
+        FAIL_ON_COMMENT_ERROR: ${{ inputs.fail-on-comment-error }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        GITHUB_EVENT_NAME: ${{ github.event_name }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        COMMENT_FILE: build/meta/pr-comment.md
+
+branding:
+  icon: 'file-text'
+  color: 'green'
