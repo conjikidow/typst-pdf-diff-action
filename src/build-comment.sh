@@ -28,12 +28,12 @@ marker='<!-- typst-pdf-diff-review -->'
   echo '| --- | --- |'
   while IFS=$'\t' read -r file status _diff_pdf; do
     case "${status}" in
-      has-diff) status_text='diff found' ;;
-      no-diff) status_text='no diff' ;;
-      missing-base) status_text='base missing' ;;
-      missing-head) status_text='head missing' ;;
-      *) status_text="${status}" ;;
+    has-diff) status_text='diff found' ;;
+    no-diff) status_text='no diff' ;;
+    missing-base) status_text='base missing' ;;
+    missing-head) status_text='head missing' ;;
+    *) status_text="${status}" ;;
     esac
     printf "| \`%s\` | %s |\n" "${file}" "${status_text}"
-  done < "${RESULT_TSV}"
-} > "${comment_file}"
+  done <"${RESULT_TSV}"
+} >"${comment_file}"
