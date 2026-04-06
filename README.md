@@ -1,6 +1,6 @@
-# typst-pdf-diff-action
+# Typst PDF Diff Action
 
-Generate PDF diffs for Typst documents in GitHub Actions.
+A GitHub Action to generate PDF diffs for Typst documents.
 
 > [!WARNING]
 > This project is in early development. The API may change in future releases.
