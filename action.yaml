@@ -90,6 +90,16 @@ runs:
         PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
         PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
 
+    - name: Determine artifact names
+      id: determine-artifact-names
+      shell: bash
+      run: bash "${{ github.action_path }}/src/determine-artifact-names.sh"
+      env:
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        GITHUB_EVENT_NAME: ${{ github.event_name }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        HEAD_REF: ${{ steps.resolve-refs.outputs.head_ref }}
+
     - name: Checkout the head revision
       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
@@ -151,7 +161,7 @@ runs:
       if: ${{ inputs.upload-artifacts == 'true' }}
       uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
       with:
-        name: typst-head-pdfs
+        name: ${{ steps.determine-artifact-names.outputs.head_artifact_name }}
         path: build/head/**/*.pdf
         if-no-files-found: error
 
@@ -160,7 +170,7 @@ runs:
       if: ${{ inputs.upload-artifacts == 'true' && steps.generate-diff.outputs.has_diff == 'true' }}
       uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
       with:
-        name: typst-diff-pdfs
+        name: ${{ steps.determine-artifact-names.outputs.diff_artifact_name }}
         path: build/diff/**/*.pdf
         if-no-files-found: error
 
