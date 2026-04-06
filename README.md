@@ -49,6 +49,9 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+env:
+  TYPST_TARGET_FILES: paper/main.typ slides/main.typ
+
 jobs:
   typst-pdf-diff:
     runs-on: ubuntu-latest
@@ -64,7 +67,7 @@ jobs:
       - name: Generate Typst PDF diff
         uses: conjikidow/typst-pdf-diff-action@v0.0.0
         with:
-          target-files: paper/main.typ slides/main.typ
+          target-files: ${{ env.TYPST_TARGET_FILES }}
           github-token: ${{ steps.generate-token.outputs.token }}
           submodules: 'recursive'
 ```
