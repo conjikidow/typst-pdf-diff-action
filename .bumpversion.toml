@@ -1,4 +1,9 @@
 [tool.bumpversion]
-current_version = "0.1.0"
+current_version = "0.0.0"
 commit = false
 tag = false
+
+[[tool.bumpversion.files]]
+filename = "README.md"
+search = 'conjikidow/typst-pdf-diff-action@v{current_version}'
+replace = 'conjikidow/typst-pdf-diff-action@v{new_version}'
