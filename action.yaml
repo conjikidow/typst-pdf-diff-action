@@ -78,7 +78,6 @@ runs:
     - name: Resolve comparison revisions
       id: resolve-refs
       shell: bash
-      run: bash "${{ github.action_path }}/src/resolve-refs.sh"
       env:
         INPUT_HEAD_REF: ${{ inputs.head-ref }}
         INPUT_BASE_REF: ${{ inputs.base-ref }}
@@ -87,16 +86,17 @@ runs:
         GITHUB_EVENT_BEFORE: ${{ github.event.before }}
         PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
         PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      run: bash "${{ github.action_path }}/src/resolve-refs.sh"
 
     - name: Determine artifact names
       id: determine-artifact-names
       shell: bash
-      run: bash "${{ github.action_path }}/src/determine-artifact-names.sh"
       env:
         GITHUB_REPOSITORY: ${{ github.repository }}
         GITHUB_EVENT_NAME: ${{ github.event_name }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
         HEAD_REF: ${{ steps.resolve-refs.outputs.head_ref }}
+      run: bash "${{ github.action_path }}/src/determine-artifact-names.sh"
 
     - name: Checkout the head revision
       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -129,30 +129,30 @@ runs:
 
     - name: Build head PDFs
       shell: bash
-      run: bash "${{ github.action_path }}/src/build-pdfs.sh"
       env:
         TARGET_FILES: ${{ inputs.target-files }}
         SOURCE_DIR: head-src
         OUTPUT_DIR: build/head
+      run: bash "${{ github.action_path }}/src/build-pdfs.sh"
 
     - name: Build base PDFs
       shell: bash
-      run: bash "${{ github.action_path }}/src/build-pdfs.sh"
       env:
         TARGET_FILES: ${{ inputs.target-files }}
         SOURCE_DIR: base-src
         OUTPUT_DIR: build/base
+      run: bash "${{ github.action_path }}/src/build-pdfs.sh"
 
     - name: Generate PDF diff
       id: generate-diff
       shell: bash
-      run: bash "${{ github.action_path }}/src/generate-diff.sh"
       env:
         TARGET_FILES: ${{ inputs.target-files }}
         BASE_DIR: build/base
         HEAD_DIR: build/head
         DIFF_DIR: build/diff
         META_DIR: build/meta
+      run: bash "${{ github.action_path }}/src/generate-diff.sh"
 
     - name: Upload head PDFs artifact
       id: upload-head-pdfs
@@ -175,7 +175,6 @@ runs:
     - name: Build PR comment body
       if: ${{ inputs.post-comment == 'true' }}
       shell: bash
-      run: bash "${{ github.action_path }}/src/build-comment.sh"
       env:
         RESULT_TSV: ${{ steps.generate-diff.outputs.result_tsv }}
         HAS_DIFF: ${{ steps.generate-diff.outputs.has_diff }}
@@ -183,11 +182,11 @@ runs:
         BASE_REF: ${{ steps.resolve-refs.outputs.base_ref }}
         HEAD_ARTIFACT_URL: ${{ steps.upload-head-pdfs.outputs.artifact-url }}
         DIFF_ARTIFACT_URL: ${{ steps.upload-diff-pdfs.outputs.artifact-url }}
+      run: bash "${{ github.action_path }}/src/build-comment.sh"
 
     - name: Update PR comment
       if: ${{ inputs.post-comment == 'true' }}
       shell: bash
-      run: bash "${{ github.action_path }}/src/post-comment.sh"
       env:
         GH_TOKEN: ${{ inputs.github-token }}
         COMMENT_MODE: ${{ inputs.comment-mode }}
@@ -196,6 +195,7 @@ runs:
         GITHUB_EVENT_NAME: ${{ github.event_name }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
         COMMENT_FILE: build/meta/pr-comment.md
+      run: bash "${{ github.action_path }}/src/post-comment.sh"
 
 branding:
   icon: 'file-text'
