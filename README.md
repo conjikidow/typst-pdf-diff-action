@@ -34,7 +34,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Generate Typst PDF diff
-        uses: conjikidow/typst-pdf-diff-action@v0.1.0
+        uses: conjikidow/typst-pdf-diff-action@v0.1.1
         with:
           target-files: main.typ
 ```
@@ -65,7 +65,7 @@ jobs:
           app-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.PRIVATE_KEY }}
       - name: Generate Typst PDF diff
-        uses: conjikidow/typst-pdf-diff-action@v0.1.0
+        uses: conjikidow/typst-pdf-diff-action@v0.1.1
         with:
           target-files: ${{ env.TYPST_TARGET_FILES }}
           github-token: ${{ steps.generate-token.outputs.token }}
