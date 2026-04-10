@@ -3,6 +3,21 @@ set -euo pipefail
 
 comment_file='build/meta/pr-comment.md'
 marker='<!-- typst-pdf-diff-review -->'
+has_missing='false'
+missing_count=0
+diff_count=0
+no_diff_count=0
+
+while IFS=$'\t' read -r _file status _diff_pdf; do
+  case "${status}" in
+  has-diff) diff_count=$((diff_count + 1)) ;;
+  no-diff) no_diff_count=$((no_diff_count + 1)) ;;
+  missing-base | missing-head)
+    has_missing='true'
+    missing_count=$((missing_count + 1))
+    ;;
+  esac
+done <"${RESULT_TSV}"
 
 {
   echo "${marker}"
@@ -13,12 +28,21 @@ marker='<!-- typst-pdf-diff-review -->'
   if [ -n "${HEAD_ARTIFACT_URL}" ]; then
     echo "- Head PDFs artifact: [typst-head-pdfs](${HEAD_ARTIFACT_URL})"
   fi
-  if [ "${HAS_DIFF}" = 'true' ]; then
-    if [ -n "${DIFF_ARTIFACT_URL}" ]; then
-      echo "- Diff PDFs artifact: [typst-diff-pdfs](${DIFF_ARTIFACT_URL})"
+  if [ "${diff_count}" -gt 0 ] && [ -n "${DIFF_ARTIFACT_URL}" ]; then
+    echo "- Diff PDFs artifact: [typst-diff-pdfs](${DIFF_ARTIFACT_URL})"
+  fi
+  if [ "${diff_count}" -gt 0 ]; then
+    if [ "${has_missing}" = 'true' ]; then
+      echo "- PDF diff: Generated for ${diff_count} file(s); skipped ${missing_count} missing file(s)."
+    else
+      echo "- PDF diff: Differences detected in ${diff_count} file(s)."
     fi
   else
-    echo '- PDF diff: No differences detected.'
+    if [ "${has_missing}" = 'true' ]; then
+      echo '- PDF diff: Skipped for files missing on either the base or head revision.'
+    else
+      echo '- PDF diff: No differences detected.'
+    fi
   fi
   echo
   echo '| File | Status |'
