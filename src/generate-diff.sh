@@ -42,6 +42,7 @@ for file in ${TARGET_FILES}; do
 
   if [ "${diff_rc}" -eq 0 ]; then
     printf '%s\tno-diff\t\n' "${file}" >>"${result_tsv}"
+    rm -f "${diff_pdf}"
     continue
   fi
   if [ "${diff_rc}" -ne 1 ]; then
