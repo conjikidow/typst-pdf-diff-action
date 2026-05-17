@@ -25,7 +25,7 @@ run_comment_call() {
 
   if [ "${COMMENT_MODE}" = 'replace' ]; then
     if ! existing_ids=$(gh api "${list_endpoint}" --paginate \
-      --jq ".[] | select(.user.login == \"github-actions[bot]\") | select(.body | contains(\"${marker}\")) | .id"); then
+      --jq ".[] | select(.body | contains(\"${marker}\")) | .id"); then
       return 1
     fi
 
