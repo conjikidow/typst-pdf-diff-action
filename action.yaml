@@ -29,8 +29,8 @@ inputs:
     default: ''
   base-ref:
     description: >-
-      The base revision to compare. Defaults to the pull request base SHA or
-      github.event.before.
+      The base revision to compare. Defaults to the merge-base of the pull
+      request or github.event.before.
     required: false
     default: ''
   post-comment:
@@ -81,6 +81,8 @@ runs:
       env:
         INPUT_HEAD_REF: ${{ inputs.head-ref }}
         INPUT_BASE_REF: ${{ inputs.base-ref }}
+        GH_TOKEN: ${{ inputs.github-token }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
         GITHUB_EVENT_NAME: ${{ github.event_name }}
         GITHUB_SHA: ${{ github.sha }}
         GITHUB_EVENT_BEFORE: ${{ github.event.before }}
