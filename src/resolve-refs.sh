@@ -17,7 +17,14 @@ fi
 
 if [ -z "${base_ref}" ]; then
   if [ "${GITHUB_EVENT_NAME}" = 'pull_request' ] && [ -n "${PR_BASE_SHA}" ]; then
-    base_ref=${PR_BASE_SHA}
+    # Use the merge-base so the diff reflects only the changes introduced by this PR,
+    # not unrelated commits merged into the base branch in the meantime.
+    require_cmd gh
+    base_ref=$(gh api "repos/${GITHUB_REPOSITORY}/compare/${PR_BASE_SHA}...${head_ref}" --jq '.merge_base_commit.sha')
+    if [ -z "${base_ref}" ]; then
+      log_error 'Failed to determine the merge-base via the GitHub Compare API.'
+      exit 1
+    fi
   else
     base_ref=${GITHUB_EVENT_BEFORE}
   fi

@@ -16,8 +16,9 @@ A GitHub Action to generate PDF diffs for Typst documents.
 
 ### Workflow Example
 
-The following workflow runs on pull requests, compares the PR head against the
-PR base, uploads the generated PDFs, and updates a PR comment.
+The following workflow runs on pull requests, compares the PR head against
+the merge-base (the commit where the PR branched off the base branch),
+uploads the generated PDFs, and updates a PR comment.
 
 ```yaml
 name: Typst PDF Diff
@@ -85,7 +86,7 @@ to rely on the action's automatic revision resolution.
 | `github-token`          | The GitHub Token for checkout, artifact upload, and comments.                      | No       | `${{ github.token }}` |
 | `submodules`            | `actions/checkout` submodule mode: `false`, `true`, or `recursive`.                | No       | `'false'`             |
 | `head-ref`              | Head revision to compare. If empty, uses the PR head SHA or `github.sha`.          | No       | `''`                  |
-| `base-ref`              | Base revision to compare. If empty, uses the PR base SHA or `github.event.before`. | No       | `''`                  |
+| `base-ref`              | Base revision to compare. If empty, uses the merge-base or `github.event.before`.  | No       | `''`                  |
 | `post-comment`          | Whether to update a pull request comment with diff results.                        | No       | `'true'`              |
 | `comment-mode`          | Comment update mode: `replace` or `append`.                                        | No       | `'replace'`           |
 | `fail-on-comment-error` | Whether to fail the action when PR comment updates fail.                           | No       | `'false'`             |
