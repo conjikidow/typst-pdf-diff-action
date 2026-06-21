@@ -101,7 +101,7 @@ runs:
       run: bash "${{ github.action_path }}/src/determine-artifact-names.sh"
 
     - name: Checkout the head revision
-      uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       with:
         path: head-src
         ref: ${{ steps.resolve-refs.outputs.head_ref }}
@@ -111,7 +111,7 @@ runs:
         persist-credentials: false
 
     - name: Checkout the base revision
-      uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       with:
         path: base-src
         ref: ${{ steps.resolve-refs.outputs.base_ref }}
