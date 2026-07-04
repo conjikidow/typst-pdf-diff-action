@@ -214,7 +214,7 @@ jobs:
           CHANGED_JSON5_FILES: ${{ needs.determine-changes.outputs.json5_files }}
         run: |
           readarray -t json5_files < <(
-            printf '%s\n' "${CHANGED_JSON5_FILES}" | tr ' ' '\n' | sed '/^$/d'
+            printf '%s\n' "${CHANGED_JSON5_FILES}" | sed '/^$/d'
           )
           if [ ${#json5_files[@]} -eq 0 ]; then
             readarray -d '' -t json5_files < <(
