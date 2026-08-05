@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # shellcheck disable=SC1091
-source "${GITHUB_ACTION_PATH}/src/common.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
 sudo apt-get update
 sudo apt-get install -y --no-install-recommends \

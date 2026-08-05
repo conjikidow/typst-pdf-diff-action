@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # shellcheck disable=SC1091
-source "${GITHUB_ACTION_PATH}/src/common.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
 if [ "${GITHUB_EVENT_NAME}" != 'pull_request' ] || [ -z "${PR_NUMBER}" ]; then
   log_warn 'Skipping pull request comment update because this is not a pull_request event.'

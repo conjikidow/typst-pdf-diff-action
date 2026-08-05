@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # shellcheck disable=SC1091
-source "${GITHUB_ACTION_PATH}/src/common.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
 require_cmd diff-pdf
 require_cmd xvfb-run
