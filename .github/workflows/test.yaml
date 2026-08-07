@@ -1,0 +1,93 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+
+  test-explicit-revisions:
+    name: Test explicit revisions
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      BASE_REV: v0.1.0
+      HEAD_REV: v0.2.0
+
+    steps:
+      - name: Checkout the main repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Compare two tagged revisions
+        id: tagged
+        uses: ./
+        with:
+          target-files: missing.typ
+          base-ref: ${{ env.BASE_REV }}
+          head-ref: ${{ env.HEAD_REV }}
+          post-comment: 'false'
+          upload-artifacts: 'false'
+
+      - name: Assert that the requested revisions were checked out
+        env:
+          HAS_DIFF: ${{ steps.tagged.outputs.has-diff }}
+        run: bash tests/assert-tagged-revisions.sh
+
+  test-merge-base-resolution:
+    name: Test merge-base resolution
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout the main repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Compare the pull request against its merge-base
+        uses: ./
+        with:
+          target-files: missing.typ
+          post-comment: 'false'
+          upload-artifacts: 'false'
+
+      - name: Assert that the merge-base was used as the base revision
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: bash tests/assert-merge-base-revisions.sh
+
+  test-build-and-diff:
+    name: Test build and diff
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout the main repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Install Typst
+        uses: typst-community/setup-typst@63ac138db421d586de61f7f5ac3bcef6a2e6c78c # v5.1.0
+
+      - name: Install PDF diff tools
+        run: bash src/install-pdf-diff-tools.sh
+
+      - name: Assert that differences between the fixtures are reported
+        run: bash tests/assert-build-and-diff.sh
