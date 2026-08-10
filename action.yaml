@@ -33,6 +33,18 @@ inputs:
       request or github.event.before.
     required: false
     default: ''
+  head-dir:
+    description: >-
+      An existing working tree to build the head revision from. When set
+      together with base-dir, the action does not check out any sources.
+    required: false
+    default: ''
+  base-dir:
+    description: >-
+      An existing working tree to build the base revision from. Must be set
+      together with head-dir.
+    required: false
+    default: ''
   post-comment:
     description: 'Whether to update a pull request comment with diff results.'
     required: false
@@ -75,8 +87,19 @@ runs:
           exit 1
         fi
 
+    - name: Validate inputs
+      shell: bash
+      env:
+        SUBMODULES: ${{ inputs.submodules }}
+        HEAD_REF: ${{ inputs.head-ref }}
+        BASE_REF: ${{ inputs.base-ref }}
+        HEAD_DIR: ${{ inputs.head-dir }}
+        BASE_DIR: ${{ inputs.base-dir }}
+      run: bash "${{ github.action_path }}/src/validate-inputs.sh"
+
     - name: Resolve comparison revisions
       id: resolve-refs
+      if: ${{ inputs.head-dir == '' }}
       shell: bash
       env:
         INPUT_HEAD_REF: ${{ inputs.head-ref }}
@@ -90,6 +113,16 @@ runs:
         PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
       run: bash "${{ github.action_path }}/src/resolve-refs.sh"
 
+    - name: Determine display revisions
+      id: display-refs
+      shell: bash
+      env:
+        RESOLVED_HEAD_REF: ${{ steps.resolve-refs.outputs.head_ref }}
+        RESOLVED_BASE_REF: ${{ steps.resolve-refs.outputs.base_ref }}
+        HEAD_DIR: ${{ inputs.head-dir }}
+        BASE_DIR: ${{ inputs.base-dir }}
+      run: bash "${{ github.action_path }}/src/determine-display-refs.sh"
+
     - name: Determine artifact names
       id: determine-artifact-names
       shell: bash
@@ -97,10 +130,11 @@ runs:
         GITHUB_REPOSITORY: ${{ github.repository }}
         GITHUB_EVENT_NAME: ${{ github.event_name }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
-        HEAD_REF: ${{ steps.resolve-refs.outputs.head_ref }}
+        HEAD_REF: ${{ steps.display-refs.outputs.head_ref }}
       run: bash "${{ github.action_path }}/src/determine-artifact-names.sh"
 
     - name: Checkout the head revision
+      if: ${{ inputs.head-dir == '' }}
       uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       with:
         path: head-src
@@ -111,6 +145,7 @@ runs:
         persist-credentials: false
 
     - name: Checkout the base revision
+      if: ${{ inputs.head-dir == '' }}
       uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       with:
         path: base-src
@@ -133,7 +168,7 @@ runs:
       shell: bash
       env:
         TARGET_FILES: ${{ inputs.target-files }}
-        SOURCE_DIR: head-src
+        SOURCE_DIR: ${{ inputs.head-dir || 'head-src' }}
         OUTPUT_DIR: build/head
       run: bash "${{ github.action_path }}/src/build-pdfs.sh"
 
@@ -141,7 +176,7 @@ runs:
       shell: bash
       env:
         TARGET_FILES: ${{ inputs.target-files }}
-        SOURCE_DIR: base-src
+        SOURCE_DIR: ${{ inputs.base-dir || 'base-src' }}
         OUTPUT_DIR: build/base
       run: bash "${{ github.action_path }}/src/build-pdfs.sh"
 
@@ -180,8 +215,9 @@ runs:
       env:
         RESULT_TSV: ${{ steps.generate-diff.outputs.result_tsv }}
         HAS_DIFF: ${{ steps.generate-diff.outputs.has_diff }}
-        HEAD_REF: ${{ steps.resolve-refs.outputs.head_ref }}
-        BASE_REF: ${{ steps.resolve-refs.outputs.base_ref }}
+        HEAD_REF: ${{ steps.display-refs.outputs.head_ref }}
+        BASE_REF: ${{ steps.display-refs.outputs.base_ref }}
+        SUPPLIED_HEAD_DIR: ${{ inputs.head-dir }}
         HEAD_ARTIFACT_URL: ${{ steps.upload-head-pdfs.outputs.artifact-url }}
         DIFF_ARTIFACT_URL: ${{ steps.upload-diff-pdfs.outputs.artifact-url }}
       run: bash "${{ github.action_path }}/src/build-comment.sh"
