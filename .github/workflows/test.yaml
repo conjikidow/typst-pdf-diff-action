@@ -16,6 +16,8 @@ permissions:
 
 jobs:
 
+  # Exercise the action end to end in each source mode.
+
   test-explicit-revisions:
     name: Test explicit revisions
     runs-on: ubuntu-latest
@@ -72,6 +74,94 @@ jobs:
           EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
         run: bash tests/assert-merge-base-revisions.sh
 
+  test-supplied-working-trees:
+    name: Test supplied working trees
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout the main repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Prepare differing working trees
+        run: |
+          mkdir -p trees/base trees/head
+          cp tests/fixtures/base/sample.typ trees/base/sample.typ
+          cp tests/fixtures/head/sample.typ trees/head/sample.typ
+
+      - name: Compare differing working trees
+        id: differing
+        uses: ./
+        with:
+          target-files: sample.typ
+          head-dir: trees/head
+          base-dir: trees/base
+          post-comment: 'false'
+          upload-artifacts: 'false'
+
+      - name: Assert that a diff was reported
+        env:
+          HAS_DIFF: ${{ steps.differing.outputs.has-diff }}
+          EXPECTED_HAS_DIFF: 'true'
+        run: bash tests/assert-has-diff.sh
+
+      - name: Assert that no sources were checked out
+        run: bash tests/assert-no-checkout.sh
+
+      - name: Prepare identical working trees
+        run: cp tests/fixtures/base/sample.typ trees/head/sample.typ
+
+      - name: Compare identical working trees
+        id: identical
+        uses: ./
+        with:
+          target-files: sample.typ
+          head-dir: trees/head
+          base-dir: trees/base
+          post-comment: 'false'
+          upload-artifacts: 'false'
+
+      - name: Assert that no diff was reported
+        env:
+          HAS_DIFF: ${{ steps.identical.outputs.has-diff }}
+          EXPECTED_HAS_DIFF: 'false'
+        run: bash tests/assert-has-diff.sh
+
+      - name: Assert that no sources were checked out for identical trees
+        run: bash tests/assert-no-checkout.sh
+
+  # Exercise the individual scripts, in the order the action runs them.
+
+  test-input-validation:
+    name: Test input validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout the main repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Assert that invalid working tree inputs are rejected
+        run: bash tests/assert-input-validation.sh
+
+  test-display-revisions:
+    name: Test display revisions
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout the main repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Assert that display revisions are determined from the working trees
+        run: bash tests/assert-display-refs.sh
+
   test-build-and-diff:
     name: Test build and diff
     runs-on: ubuntu-latest
@@ -91,3 +181,17 @@ jobs:
 
       - name: Assert that differences between the fixtures are reported
         run: bash tests/assert-build-and-diff.sh
+
+  test-comment-body:
+    name: Test comment body
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout the main repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Assert that supplied working trees are marked in the comment
+        run: bash tests/assert-comment-body.sh
