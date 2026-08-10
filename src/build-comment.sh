@@ -8,6 +8,11 @@ missing_count=0
 diff_count=0
 no_diff_count=0
 
+ref_note=''
+if [ -n "${SUPPLIED_HEAD_DIR}" ]; then
+  ref_note=' (caller-supplied working tree)'
+fi
+
 while IFS=$'\t' read -r _file status _diff_pdf; do
   case "${status}" in
   has-diff) diff_count=$((diff_count + 1)) ;;
@@ -23,8 +28,8 @@ done <"${RESULT_TSV}"
   echo "${marker}"
   echo '## Typst PDF Diff Review'
   echo
-  echo "- Base revision: \`${BASE_REF}\`"
-  echo "- Head revision: \`${HEAD_REF}\`"
+  echo "- Base revision: \`${BASE_REF}\`${ref_note}"
+  echo "- Head revision: \`${HEAD_REF}\`${ref_note}"
   if [ -n "${HEAD_ARTIFACT_URL}" ]; then
     echo "- Head PDFs artifact: [typst-head-pdfs](${HEAD_ARTIFACT_URL})"
   fi
