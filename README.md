@@ -100,15 +100,11 @@ to rely on the action's automatic revision resolution.
 | `upload-artifacts`      | Whether to upload head and diff PDFs as workflow artifacts.                        | No       | `'true'`              |
 <!-- markdownlint-enable MD013 -->
 
-<!-- markdownlint-disable MD028 -->
-> [!TIP]
-> `target-files` is interpreted as a space-separated list. For example:
-> `main.typ appendix.typ`.
+`target-files` is interpreted as a space-separated list, for example `main.typ appendix.typ`.
 
-> [!IMPORTANT]
+> [!NOTE]
 > `post-comment: 'true'` is intended for `pull_request` events.
 > On other events, the action skips pull request comment updates.
-<!-- markdownlint-enable MD028 -->
 
 #### Advanced Inputs
 
