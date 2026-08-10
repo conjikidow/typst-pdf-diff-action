@@ -90,7 +90,6 @@ to rely on the action's automatic revision resolution.
 
 ### Inputs
 
-<!-- markdownlint-disable MD013 -->
 | Name                    | Description                                                                        | Required | Default               |
 | ----------------------- | ---------------------------------------------------------------------------------- | -------- | --------------------- |
 | `target-files`          | Space-separated Typst entrypoint files to compile.                                 | Yes      | -                     |
@@ -103,7 +102,6 @@ to rely on the action's automatic revision resolution.
 | `comment-mode`          | Comment update mode: `replace` or `append`.                                        | No       | `'replace'`           |
 | `fail-on-comment-error` | Whether to fail the action when PR comment updates fail.                           | No       | `'false'`             |
 | `upload-artifacts`      | Whether to upload head and diff PDFs as workflow artifacts.                        | No       | `'true'`              |
-<!-- markdownlint-enable MD013 -->
 
 `target-files` is interpreted as a space-separated list, for example `main.typ appendix.typ`.
 
@@ -116,12 +114,10 @@ to rely on the action's automatic revision resolution.
 These are only needed when the action cannot check out the sources itself.
 See [Bring Your Own Working Trees](#bring-your-own-working-trees).
 
-<!-- markdownlint-disable MD013 -->
 | Name       | Description                                                                        | Required | Default |
 | ---------- | ---------------------------------------------------------------------------------- | -------- | ------- |
 | `head-dir` | Existing working tree to build the head revision from. Disables checkout when set. | No       | `''`    |
 | `base-dir` | Existing working tree to build the base revision from. Requires `head-dir`.        | No       | `''`    |
-<!-- markdownlint-enable MD013 -->
 
 Both must be set together, and `submodules`, `head-ref`, and `base-ref` must stay at their defaults,
 because the action checks out nothing in this mode.
