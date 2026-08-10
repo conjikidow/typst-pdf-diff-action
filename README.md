@@ -40,6 +40,11 @@ jobs:
           target-files: main.typ
 ```
 
+The examples reference actions by tag for readability.
+For production workflows, consider pinning each action to a full-length commit SHA,
+as [GitHub recommends](https://docs.github.com/en/actions/reference/security/secure-use#using-third-party-actions).
+Releases of this action are immutable, so its own tags are already locked to a single commit.
+
 If your Typst project uses submodules, set `submodules: 'recursive'` and pass a
 token that can access those submodules.
 
