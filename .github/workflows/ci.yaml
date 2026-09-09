@@ -47,6 +47,7 @@ jobs:
           files_yaml: |
             github_actions:
               - .github/workflows/**
+              - .github/actionlint.yaml
               - action.yaml
             github_actions_ci:
               - .github/workflows/ci.yaml
