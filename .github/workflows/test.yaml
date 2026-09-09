@@ -35,7 +35,7 @@ jobs:
 
       - name: Compare two tagged revisions
         id: tagged
-        uses: ./
+        uses: $/
         with:
           target-files: missing.typ
           base-ref: ${{ env.BASE_REV }}
@@ -62,7 +62,7 @@ jobs:
           persist-credentials: false
 
       - name: Compare the pull request against its merge-base
-        uses: ./
+        uses: $/
         with:
           target-files: missing.typ
           post-comment: 'false'
@@ -93,7 +93,7 @@ jobs:
 
       - name: Compare differing working trees
         id: differing
-        uses: ./
+        uses: $/
         with:
           target-files: sample.typ
           head-dir: trees/head
@@ -115,7 +115,7 @@ jobs:
 
       - name: Compare identical working trees
         id: identical
-        uses: ./
+        uses: $/
         with:
           target-files: sample.typ
           head-dir: trees/head

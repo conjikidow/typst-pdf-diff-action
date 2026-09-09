@@ -1,0 +1,7 @@
+---
+paths:
+  .github/workflows/*.{yml,yaml}:
+    ignore:
+      # actionlint does not yet recognise GitHub's self-repository `uses:` syntax.
+      # Remove this once https://github.com/rhysd/actionlint/issues/711 ships.
+      - 'specifying action "\$/.*" in invalid format because ref is missing'
