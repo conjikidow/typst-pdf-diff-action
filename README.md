@@ -217,6 +217,14 @@ so do not point `head-dir` or `base-dir` inside that directory.
 5. Uploads head PDFs and diff PDFs as artifacts when enabled.
 6. Builds a Markdown summary and optionally updates a PR comment.
 
+## License
+
+Licensed under either of [MIT license](LICENSE-MIT) or [Apache License, Version 2.0](LICENSE-APACHE) at your option.
+
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in this software
+by you, as defined in the Apache-2.0 license, shall be dually licensed as above,
+without any additional terms or conditions.
+
 ## Contributing & Feedback
 
 Contributions, bug reports, and feedback are always welcome!
