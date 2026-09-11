@@ -72,19 +72,26 @@ jobs:
     permissions: {}
     steps:
       - uses: actions/create-github-app-token@v3
-        id: generate-token
+        id: app-token
         with:
           client-id: ${{ vars.GH_APP_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          repositories: |
+            ${{ github.event.repository.name }}
+            private-submodule
+          permission-contents: read
+          permission-pull-requests: write
       - name: Generate Typst PDF diff
         uses: conjikidow/typst-pdf-diff-action@v0.3.0
         with:
           target-files: ${{ env.TYPST_TARGET_FILES }}
-          github-token: ${{ steps.generate-token.outputs.token }}
+          github-token: ${{ steps.app-token.outputs.token }}
           submodules: 'recursive'
 ```
 
 > [!IMPORTANT]
+> Without `owner` or `repositories`, the token reaches only the repository the workflow runs in,
+> so list every repository it has to read, this one included.
 > A GitHub App installation token is scoped to a single account,
 > so it cannot read submodules owned by another user or organization.
 > `actions/checkout` fails the whole job when any submodule cannot be fetched.
@@ -171,6 +178,7 @@ or the diff will also contain unrelated changes merged into the base branch in t
           client-id: ${{ vars.GH_APP_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
           repositories: private-submodule
+          permission-contents: read
 
       - name: Resolve the merge-base
         id: merge-base
