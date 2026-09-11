@@ -71,7 +71,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: write
     steps:
       - uses: actions/create-github-app-token@v3
         id: generate-token
@@ -96,20 +95,36 @@ jobs:
 For non-PR events, set `head-ref` and `base-ref` explicitly if you do not want
 to rely on the action's automatic revision resolution.
 
+### Permissions
+
+The token passed to `github-token` is only reached by the steps that talk to GitHub,
+so what it needs depends on which of them run.
+
+| Scope                  | Needed for                                                                                        |
+| ---------------------- | ------------------------------------------------------------------------------------------------- |
+| `contents: read`       | Resolving the revisions and checking them out. Not needed when `head-dir` and `base-dir` are set. |
+| `pull-requests: write` | Updating the pull request comment. Not needed when `post-comment` is `false`.                     |
+
+The default `${{ github.token }}` carries whatever the workflow grants it,
+so grant those scopes in the job, as the first example above does.
+
+The `permissions:` block does not reach a token you pass yourself.
+A GitHub App installation token, as in the second example above, needs the same access granted to the app itself.
+
 ### Inputs
 
-| Name                    | Description                                                                        | Required | Default               |
-| ----------------------- | ---------------------------------------------------------------------------------- | -------- | --------------------- |
-| `target-files`          | Space-separated Typst entrypoint files to compile.                                 | Yes      | -                     |
-| `typst-version`         | The Typst version to install.                                                      | No       | `'latest'`            |
-| `github-token`          | The GitHub Token for checkout, artifact upload, and comments.                      | No       | `${{ github.token }}` |
-| `submodules`            | `actions/checkout` submodule mode: `false`, `true`, or `recursive`.                | No       | `'false'`             |
-| `head-ref`              | Head revision to compare. If empty, uses the PR head SHA or `github.sha`.          | No       | `''`                  |
-| `base-ref`              | Base revision to compare. If empty, uses the merge-base or `github.event.before`.  | No       | `''`                  |
-| `post-comment`          | Whether to update a pull request comment with diff results.                        | No       | `'true'`              |
-| `comment-mode`          | Comment update mode: `replace` or `append`.                                        | No       | `'replace'`           |
-| `fail-on-comment-error` | Whether to fail the action when PR comment updates fail.                           | No       | `'false'`             |
-| `upload-artifacts`      | Whether to upload head and diff PDFs as workflow artifacts.                        | No       | `'true'`              |
+| Name                    | Description                                                                      | Required | Default               |
+| ----------------------- | -------------------------------------------------------------------------------- | -------- | --------------------- |
+| `target-files`          | Space-separated Typst entrypoint files to compile.                               | Yes      | -                     |
+| `typst-version`         | Version of Typst to use.                                                         | No       | `'latest'`            |
+| `github-token`          | Token used to authenticate with GitHub.                                          | No       | `${{ github.token }}` |
+| `submodules`            | Submodule mode passed to `actions/checkout`: `false`, `true`, or `recursive`.    | No       | `'false'`             |
+| `head-ref`              | Head revision to compare. Defaults to the pull request head SHA or `github.sha`. | No       | `''`                  |
+| `base-ref`              | Base revision to compare. Defaults to the merge-base or `github.event.before`.   | No       | `''`                  |
+| `post-comment`          | Whether to update a pull request comment with the diff results.                  | No       | `'true'`              |
+| `comment-mode`          | Comment update mode: `replace` or `append`.                                      | No       | `'replace'`           |
+| `fail-on-comment-error` | Whether to fail the action when the comment update fails.                        | No       | `'false'`             |
+| `upload-artifacts`      | Whether to upload the head and diff PDFs as workflow artifacts.                  | No       | `'true'`              |
 
 `target-files` is interpreted as a space-separated list, for example `main.typ appendix.typ`.
 
@@ -122,10 +137,10 @@ to rely on the action's automatic revision resolution.
 These are only needed when the action cannot check out the sources itself.
 See [Bring Your Own Working Trees](#bring-your-own-working-trees).
 
-| Name       | Description                                                                        | Required | Default |
-| ---------- | ---------------------------------------------------------------------------------- | -------- | ------- |
-| `head-dir` | Existing working tree to build the head revision from. Disables checkout when set. | No       | `''`    |
-| `base-dir` | Existing working tree to build the base revision from. Requires `head-dir`.        | No       | `''`    |
+| Name       | Description                                                                 | Required | Default |
+| ---------- | --------------------------------------------------------------------------- | -------- | ------- |
+| `head-dir` | Existing working tree to build the head revision from. Requires `base-dir`. | No       | `''`    |
+| `base-dir` | Existing working tree to build the base revision from. Requires `head-dir`. | No       | `''`    |
 
 Both must be set together, and `submodules`, `head-ref`, and `base-ref` must stay at their defaults,
 because the action checks out nothing in this mode.
@@ -133,11 +148,11 @@ Any other combination fails immediately.
 
 ### Outputs
 
-| Name                | Description                                                          |
-| ------------------- | -------------------------------------------------------------------- |
-| `has-diff`          | `true` when at least one target file produces a diff PDF.            |
-| `head-artifact-url` | The uploaded head PDF artifact URL when artifact upload is enabled.  |
-| `diff-artifact-url` | The uploaded diff PDF artifact URL when a diff artifact is uploaded. |
+| Name                | Description                                                                      |
+| ------------------- | -------------------------------------------------------------------------------- |
+| `has-diff`          | `true` when at least one target file produces a diff PDF.                        |
+| `head-artifact-url` | URL of the uploaded head PDF artifact. Empty when `upload-artifacts` is `false`. |
+| `diff-artifact-url` | URL of the uploaded diff PDF artifact. Empty when no diff artifact was uploaded. |
 
 ### Bring Your Own Working Trees
 
