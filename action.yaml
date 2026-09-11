@@ -18,31 +18,32 @@ inputs:
     default: ${{ github.token }}
   submodules:
     description: >-
-      Submodule mode passed to actions/checkout. Use false, true, or recursive.
+      Submodule mode passed to `actions/checkout`. Use `false`, `true`, or
+      `recursive`.
     required: false
     default: 'false'
   head-ref:
     description: >-
       The head revision to compare. Defaults to the pull request head SHA or
-      github.sha.
+      `github.sha`.
     required: false
     default: ''
   base-ref:
     description: >-
       The base revision to compare. Defaults to the merge-base of the pull
-      request or github.event.before.
+      request or `github.event.before`.
     required: false
     default: ''
   head-dir:
     description: >-
       An existing working tree to build the head revision from. When set
-      together with base-dir, the action does not check out any sources.
+      together with `base-dir`, the action does not check out any sources.
     required: false
     default: ''
   base-dir:
     description: >-
       An existing working tree to build the base revision from. Must be set
-      together with head-dir.
+      together with `head-dir`.
     required: false
     default: ''
   post-comment:
@@ -50,7 +51,7 @@ inputs:
     required: false
     default: 'true'
   comment-mode:
-    description: 'Comment update mode. Supported values are replace and append.'
+    description: 'Comment update mode. Supported values are `replace` and `append`.'
     required: false
     default: 'replace'
   fail-on-comment-error:
