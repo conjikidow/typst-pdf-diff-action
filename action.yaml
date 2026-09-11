@@ -7,73 +7,59 @@ inputs:
     description: 'Space-separated Typst entrypoint files to compile.'
     required: true
   typst-version:
-    description: 'The Typst version to install.'
+    description: 'Version of Typst to use.'
     required: false
     default: 'latest'
   github-token:
-    description: >-
-      The GitHub token for checkout, artifact upload, and optional comment
-      updates.
+    description: 'Token used to authenticate with GitHub. Needs `contents: read` and `pull-requests: write`.'
     required: false
     default: ${{ github.token }}
   submodules:
-    description: >-
-      Submodule mode passed to `actions/checkout`. Use `false`, `true`, or
-      `recursive`.
+    description: 'Submodule mode passed to `actions/checkout`: `false`, `true`, or `recursive`.'
     required: false
     default: 'false'
   head-ref:
-    description: >-
-      The head revision to compare. Defaults to the pull request head SHA or
-      `github.sha`.
+    description: 'Head revision to compare. Defaults to the pull request head SHA or `github.sha`.'
     required: false
     default: ''
   base-ref:
-    description: >-
-      The base revision to compare. Defaults to the merge-base of the pull
-      request or `github.event.before`.
+    description: 'Base revision to compare. Defaults to the merge-base of the pull request or `github.event.before`.'
     required: false
     default: ''
   head-dir:
-    description: >-
-      An existing working tree to build the head revision from. When set
-      together with `base-dir`, the action does not check out any sources.
+    description: 'Existing working tree to build the head revision from. Requires `base-dir`.'
     required: false
     default: ''
   base-dir:
-    description: >-
-      An existing working tree to build the base revision from. Must be set
-      together with `head-dir`.
+    description: 'Existing working tree to build the base revision from. Requires `head-dir`.'
     required: false
     default: ''
   post-comment:
-    description: 'Whether to update a pull request comment with diff results.'
+    description: 'Whether to update a pull request comment with the diff results.'
     required: false
     default: 'true'
   comment-mode:
-    description: 'Comment update mode. Supported values are `replace` and `append`.'
+    description: 'Comment update mode: `replace` or `append`.'
     required: false
     default: 'replace'
   fail-on-comment-error:
-    description: 'Whether to fail the action when comment updates fail.'
+    description: 'Whether to fail the action when the comment update fails.'
     required: false
     default: 'false'
   upload-artifacts:
-    description: 'Whether to upload head and diff PDFs as workflow artifacts.'
+    description: 'Whether to upload the head and diff PDFs as workflow artifacts.'
     required: false
     default: 'true'
 
 outputs:
   has-diff:
-    description: '`true` when at least one target file has a PDF diff.'
+    description: '`true` when at least one target file produces a diff PDF.'
     value: ${{ steps.generate-diff.outputs.has_diff }}
   head-artifact-url:
-    description: >-
-      The uploaded head PDF artifact URL when artifact upload is enabled.
+    description: 'URL of the uploaded head PDF artifact. Empty when `upload-artifacts` is `false`.'
     value: ${{ steps.upload-head-pdfs.outputs.artifact-url }}
   diff-artifact-url:
-    description: >-
-      The uploaded diff PDF artifact URL when a diff artifact is uploaded.
+    description: 'URL of the uploaded diff PDF artifact. Empty when no diff artifact was uploaded.'
     value: ${{ steps.upload-diff-pdfs.outputs.artifact-url }}
 
 runs:
