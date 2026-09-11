@@ -10,12 +10,6 @@ inputs:
     description: 'Version of Typst to use.'
     required: false
     default: 'latest'
-  github-token:
-    description: >-
-      Token used to authenticate with GitHub. Needs `contents: read` for the
-      checkout and `pull-requests: write` for the comment.
-    required: false
-    default: ${{ github.token }}
   submodules:
     description: 'Submodule mode passed to `actions/checkout`: `false`, `true`, or `recursive`.'
     required: false
@@ -26,14 +20,6 @@ inputs:
     default: ''
   base-ref:
     description: 'Base revision to compare. Defaults to the merge-base of the pull request or `github.event.before`.'
-    required: false
-    default: ''
-  head-dir:
-    description: 'Existing working tree to build the head revision from. Requires `base-dir`.'
-    required: false
-    default: ''
-  base-dir:
-    description: 'Existing working tree to build the base revision from. Requires `head-dir`.'
     required: false
     default: ''
   post-comment:
@@ -52,6 +38,20 @@ inputs:
     description: 'Whether to upload the head and diff PDFs as workflow artifacts.'
     required: false
     default: 'true'
+  github-token:
+    description: >-
+      Token used to authenticate with GitHub. Needs `contents: read` for the
+      checkout and `pull-requests: write` for the comment.
+    required: false
+    default: ${{ github.token }}
+  head-dir:
+    description: 'Existing working tree to build the head revision from. Requires `base-dir`.'
+    required: false
+    default: ''
+  base-dir:
+    description: 'Existing working tree to build the base revision from. Requires `head-dir`.'
+    required: false
+    default: ''
 
 outputs:
   has-diff:

@@ -117,7 +117,6 @@ A GitHub App installation token, as in the second example above, needs the same 
 | ----------------------- | -------------------------------------------------------------------------------- | -------- | --------------------- |
 | `target-files`          | Space-separated Typst entrypoint files to compile.                               | Yes      | -                     |
 | `typst-version`         | Version of Typst to use.                                                         | No       | `'latest'`            |
-| `github-token`          | Token used to authenticate with GitHub.                                          | No       | `${{ github.token }}` |
 | `submodules`            | Submodule mode passed to `actions/checkout`: `false`, `true`, or `recursive`.    | No       | `'false'`             |
 | `head-ref`              | Head revision to compare. Defaults to the pull request head SHA or `github.sha`. | No       | `''`                  |
 | `base-ref`              | Base revision to compare. Defaults to the merge-base or `github.event.before`.   | No       | `''`                  |
@@ -125,6 +124,7 @@ A GitHub App installation token, as in the second example above, needs the same 
 | `comment-mode`          | Comment update mode: `replace` or `append`.                                      | No       | `'replace'`           |
 | `fail-on-comment-error` | Whether to fail the action when the comment update fails.                        | No       | `'false'`             |
 | `upload-artifacts`      | Whether to upload the head and diff PDFs as workflow artifacts.                  | No       | `'true'`              |
+| `github-token`          | Token used to authenticate with GitHub.                                          | No       | `${{ github.token }}` |
 
 `target-files` is interpreted as a space-separated list, for example `main.typ appendix.typ`.
 
