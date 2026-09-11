@@ -1,5 +1,13 @@
 # Typst PDF Diff Action
 
+[![Marketplace](https://img.shields.io/badge/Marketplace-Typst_PDF_Diff_Action-2088FF.svg?style=flat&logo=githubactions&logoColor=white)](https://github.com/marketplace/actions/typst-pdf-diff-action)
+[![Release](https://img.shields.io/github/v/release/conjikidow/typst-pdf-diff-action?style=flat&logo=github&logoColor=white&label=release)](https://github.com/conjikidow/typst-pdf-diff-action/releases/latest)
+[![Typst](https://img.shields.io/badge/typst-239DAD.svg?style=flat&logo=typst&logoColor=white)](https://typst.app/)
+[![License](https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue.svg?style=flat)](#license)
+[![prek](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/j178/prek/master/docs/assets/badge-v0.json)](https://github.com/j178/prek)
+[![CI](https://github.com/conjikidow/typst-pdf-diff-action/actions/workflows/ci.yaml/badge.svg)](https://github.com/conjikidow/typst-pdf-diff-action/actions/workflows/ci.yaml)
+[![Test](https://github.com/conjikidow/typst-pdf-diff-action/actions/workflows/test.yaml/badge.svg)](https://github.com/conjikidow/typst-pdf-diff-action/actions/workflows/test.yaml)
+
 A GitHub Action to generate PDF diffs for Typst documents.
 
 > [!WARNING]
