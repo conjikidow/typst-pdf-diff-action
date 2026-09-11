@@ -71,7 +71,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: write
     steps:
       - uses: actions/create-github-app-token@v3
         id: generate-token
@@ -107,7 +106,7 @@ so what it needs depends on which of them run.
 | `pull-requests: write` | Updating the pull request comment. Not needed when `post-comment` is `false`.                     |
 
 The default `${{ github.token }}` carries whatever the workflow grants it,
-so grant those scopes in the job, as the examples above do.
+so grant those scopes in the job, as the first example above does.
 
 The `permissions:` block does not reach a token you pass yourself.
 A GitHub App installation token, as in the second example above, needs the same access granted to the app itself.
