@@ -11,7 +11,9 @@ inputs:
     required: false
     default: 'latest'
   github-token:
-    description: 'Token used to authenticate with GitHub. Needs `contents: read` and `pull-requests: write`.'
+    description: >-
+      Token used to authenticate with GitHub. Needs `contents: read` for the
+      checkout and `pull-requests: write` for the comment.
     required: false
     default: ${{ github.token }}
   submodules:
