@@ -4,8 +4,8 @@ set -euo pipefail
 # shellcheck disable=SC1091
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
-head_ref=${INPUT_HEAD_REF}
-base_ref=${INPUT_BASE_REF}
+head_ref=${HEAD_REF_INPUT}
+base_ref=${BASE_REF_INPUT}
 
 if [ -z "${head_ref}" ]; then
   if [ "${GITHUB_EVENT_NAME}" = 'pull_request' ] && [ -n "${PR_HEAD_SHA}" ]; then
@@ -26,7 +26,7 @@ if [ -z "${base_ref}" ]; then
       exit 1
     fi
   else
-    base_ref=${GITHUB_EVENT_BEFORE}
+    base_ref=${PUSH_BEFORE_SHA}
   fi
 fi
 
