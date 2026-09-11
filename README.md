@@ -96,6 +96,22 @@ jobs:
 For non-PR events, set `head-ref` and `base-ref` explicitly if you do not want
 to rely on the action's automatic revision resolution.
 
+### Permissions
+
+The token passed to `github-token` is only reached by the steps that talk to GitHub,
+so what it needs depends on which of them run.
+
+| Scope                  | Needed for                                                                                        |
+| ---------------------- | ------------------------------------------------------------------------------------------------- |
+| `contents: read`       | Resolving the revisions and checking them out. Not needed when `head-dir` and `base-dir` are set. |
+| `pull-requests: write` | Updating the pull request comment. Not needed when `post-comment` is `false`.                     |
+
+The default `${{ github.token }}` carries whatever the workflow grants it,
+so grant those scopes in the job, as the examples above do.
+
+The `permissions:` block does not reach a token you pass yourself.
+A GitHub App installation token, as in the second example above, needs the same access granted to the app itself.
+
 ### Inputs
 
 | Name                    | Description                                                                      | Required | Default               |
