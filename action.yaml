@@ -1,5 +1,5 @@
 name: 'Typst PDF Diff Action'
-description: 'Build and diff Typst PDFs in GitHub Actions with artifact uploads.'
+description: 'Generate PDF diffs for Typst documents'
 author: 'conjikidow'
 
 inputs:
