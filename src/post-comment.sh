@@ -18,7 +18,7 @@ if [ ! -f "${COMMENT_FILE}" ]; then
 fi
 
 marker='<!-- typst-pdf-diff-review -->'
-list_endpoint="repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments"
+list_endpoint="repos/{owner}/{repo}/issues/${PR_NUMBER}/comments"
 
 run_comment_call() {
   local status=0
@@ -30,7 +30,7 @@ run_comment_call() {
     fi
 
     for comment_id in ${existing_ids}; do
-      if ! gh api -X DELETE "repos/${GITHUB_REPOSITORY}/issues/comments/${comment_id}"; then
+      if ! gh api -X DELETE "repos/{owner}/{repo}/issues/comments/${comment_id}"; then
         status=1
       fi
     done
