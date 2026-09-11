@@ -92,6 +92,7 @@ runs:
       shell: bash
       env:
         GH_TOKEN: ${{ inputs.github-token }}
+        GH_REPO: ${{ github.repository }}
         PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
         PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         PUSH_BEFORE_SHA: ${{ github.event.before }}
@@ -199,7 +200,6 @@ runs:
       env:
         SUPPLIED_HEAD_DIR: ${{ inputs.head-dir }}
         RESULT_TSV: ${{ steps.generate-diff.outputs.result_tsv }}
-        HAS_DIFF: ${{ steps.generate-diff.outputs.has_diff }}
         HEAD_REF: ${{ steps.display-refs.outputs.head_ref }}
         BASE_REF: ${{ steps.display-refs.outputs.base_ref }}
         HEAD_ARTIFACT_URL: ${{ steps.upload-head-pdfs.outputs.artifact-url }}
@@ -211,6 +211,7 @@ runs:
       shell: bash
       env:
         GH_TOKEN: ${{ inputs.github-token }}
+        GH_REPO: ${{ github.repository }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
         COMMENT_MODE: ${{ inputs.comment-mode }}
         FAIL_ON_COMMENT_ERROR: ${{ inputs.fail-on-comment-error }}
