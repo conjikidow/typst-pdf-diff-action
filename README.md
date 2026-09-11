@@ -116,7 +116,8 @@ so grant those scopes in the job, as the first example above does.
 
 The `permissions:` block does not reach a token you pass yourself.
 A GitHub App installation token, as in the second example above, needs the same access granted to the app itself.
-The job's own `GITHUB_TOKEN` is then unused, which is why that example zeroes it with `permissions: {}`.
+None of the steps that act on your repository use the job's own `GITHUB_TOKEN`,
+which is why that example zeroes it with `permissions: {}`.
 
 ### Inputs
 
