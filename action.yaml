@@ -91,33 +91,28 @@ runs:
       if: ${{ inputs.head-dir == '' }}
       shell: bash
       env:
-        INPUT_HEAD_REF: ${{ inputs.head-ref }}
-        INPUT_BASE_REF: ${{ inputs.base-ref }}
         GH_TOKEN: ${{ inputs.github-token }}
-        GITHUB_REPOSITORY: ${{ github.repository }}
-        GITHUB_EVENT_NAME: ${{ github.event_name }}
-        GITHUB_SHA: ${{ github.sha }}
-        GITHUB_EVENT_BEFORE: ${{ github.event.before }}
         PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
         PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        PUSH_BEFORE_SHA: ${{ github.event.before }}
+        HEAD_REF_INPUT: ${{ inputs.head-ref }}
+        BASE_REF_INPUT: ${{ inputs.base-ref }}
       run: bash "${{ github.action_path }}/src/resolve-refs.sh"
 
     - name: Determine display revisions
       id: display-refs
       shell: bash
       env:
-        RESOLVED_HEAD_REF: ${{ steps.resolve-refs.outputs.head_ref }}
-        RESOLVED_BASE_REF: ${{ steps.resolve-refs.outputs.base_ref }}
         HEAD_DIR: ${{ inputs.head-dir }}
         BASE_DIR: ${{ inputs.base-dir }}
+        RESOLVED_HEAD_REF: ${{ steps.resolve-refs.outputs.head_ref }}
+        RESOLVED_BASE_REF: ${{ steps.resolve-refs.outputs.base_ref }}
       run: bash "${{ github.action_path }}/src/determine-display-refs.sh"
 
     - name: Determine artifact names
       id: determine-artifact-names
       shell: bash
       env:
-        GITHUB_REPOSITORY: ${{ github.repository }}
-        GITHUB_EVENT_NAME: ${{ github.event_name }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
         HEAD_REF: ${{ steps.display-refs.outputs.head_ref }}
       run: bash "${{ github.action_path }}/src/determine-artifact-names.sh"
@@ -202,11 +197,11 @@ runs:
       if: ${{ inputs.post-comment == 'true' }}
       shell: bash
       env:
+        SUPPLIED_HEAD_DIR: ${{ inputs.head-dir }}
         RESULT_TSV: ${{ steps.generate-diff.outputs.result_tsv }}
         HAS_DIFF: ${{ steps.generate-diff.outputs.has_diff }}
         HEAD_REF: ${{ steps.display-refs.outputs.head_ref }}
         BASE_REF: ${{ steps.display-refs.outputs.base_ref }}
-        SUPPLIED_HEAD_DIR: ${{ inputs.head-dir }}
         HEAD_ARTIFACT_URL: ${{ steps.upload-head-pdfs.outputs.artifact-url }}
         DIFF_ARTIFACT_URL: ${{ steps.upload-diff-pdfs.outputs.artifact-url }}
       run: bash "${{ github.action_path }}/src/build-comment.sh"
@@ -216,11 +211,9 @@ runs:
       shell: bash
       env:
         GH_TOKEN: ${{ inputs.github-token }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
         COMMENT_MODE: ${{ inputs.comment-mode }}
         FAIL_ON_COMMENT_ERROR: ${{ inputs.fail-on-comment-error }}
-        GITHUB_REPOSITORY: ${{ github.repository }}
-        GITHUB_EVENT_NAME: ${{ github.event_name }}
-        PR_NUMBER: ${{ github.event.pull_request.number }}
         COMMENT_FILE: build/meta/pr-comment.md
       run: bash "${{ github.action_path }}/src/post-comment.sh"
 
