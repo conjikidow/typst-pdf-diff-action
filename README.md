@@ -76,6 +76,9 @@ jobs:
         with:
           client-id: ${{ vars.GH_APP_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          repositories: |
+            ${{ github.event.repository.name }}
+            private-submodule
           permission-contents: read
           permission-pull-requests: write
       - name: Generate Typst PDF diff
@@ -87,6 +90,8 @@ jobs:
 ```
 
 > [!IMPORTANT]
+> Without `owner` or `repositories`, the token reaches only the repository the workflow runs in,
+> so list every repository it has to read, this one included.
 > A GitHub App installation token is scoped to a single account,
 > so it cannot read submodules owned by another user or organization.
 > `actions/checkout` fails the whole job when any submodule cannot be fetched.
