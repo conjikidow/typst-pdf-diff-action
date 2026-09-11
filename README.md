@@ -76,6 +76,8 @@ jobs:
         with:
           client-id: ${{ vars.GH_APP_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          permission-contents: read
+          permission-pull-requests: write
       - name: Generate Typst PDF diff
         uses: conjikidow/typst-pdf-diff-action@v0.3.0
         with:
@@ -171,6 +173,7 @@ or the diff will also contain unrelated changes merged into the base branch in t
           client-id: ${{ vars.GH_APP_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
           repositories: private-submodule
+          permission-contents: read
 
       - name: Resolve the merge-base
         id: merge-base
