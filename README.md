@@ -72,7 +72,7 @@ jobs:
     permissions: {}
     steps:
       - uses: actions/create-github-app-token@v3
-        id: generate-token
+        id: app-token
         with:
           client-id: ${{ vars.GH_APP_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
@@ -85,7 +85,7 @@ jobs:
         uses: conjikidow/typst-pdf-diff-action@v0.3.0
         with:
           target-files: ${{ env.TYPST_TARGET_FILES }}
-          github-token: ${{ steps.generate-token.outputs.token }}
+          github-token: ${{ steps.app-token.outputs.token }}
           submodules: 'recursive'
 ```
 
