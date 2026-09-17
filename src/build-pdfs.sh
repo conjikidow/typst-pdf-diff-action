@@ -4,8 +4,6 @@ set -euo pipefail
 # shellcheck disable=SC1091
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
-require_cmd typst
-
 mkdir -p "${OUTPUT_DIR}"
 
 for file in ${TARGET_FILES}; do

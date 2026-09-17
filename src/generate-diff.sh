@@ -4,9 +4,6 @@ set -euo pipefail
 # shellcheck disable=SC1091
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
-require_cmd diff-pdf
-require_cmd xvfb-run
-
 mkdir -p "${DIFF_DIR}" "${META_DIR}"
 result_tsv="${META_DIR}/diff-results.tsv"
 : >"${result_tsv}"
