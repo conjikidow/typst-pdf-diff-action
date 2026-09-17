@@ -22,6 +22,9 @@ A GitHub Action to generate PDF diffs for Typst documents.
 
 ## Usage
 
+The action requires a Linux runner with passwordless `sudo apt-get`, `gh`, and `jq`,
+which the GitHub-hosted Ubuntu runner images provide.
+
 ### Workflow Example
 
 The following workflow runs on pull requests, compares the PR head against
@@ -47,8 +50,6 @@ jobs:
         with:
           target-files: main.typ
 ```
-
-This action shells out to `gh` and `jq`, which the GitHub-hosted runner images provide.
 
 The examples reference actions by tag for readability.
 For production workflows, consider pinning each action to a full-length commit SHA,
