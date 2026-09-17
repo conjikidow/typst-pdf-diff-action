@@ -1,10 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-log_info() {
-  echo "$*"
-}
-
 log_warn() {
   echo "::warning::$*"
 }
