@@ -1,21 +1,21 @@
 #!/bin/bash
 set -euo pipefail
 
-tests_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
+tests_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 src_dir="${tests_dir}/../src"
 
 # shellcheck disable=SC1091
 source "${src_dir}/common.sh"
 
-work_dir=$(mktemp -d)
+work_dir="$(mktemp -d)"
 trap 'rm -rf "${work_dir}"' EXIT
 
 status=0
 
 run_case() {
-  local name=$1
-  local head_fixture=$2
-  local expected_has_diff=$3
+  local name="$1"
+  local head_fixture="$2"
+  local expected_has_diff="$3"
 
   local build="${work_dir}/${name}"
   local outputs="${build}/outputs"
@@ -32,7 +32,7 @@ run_case() {
     bash "${src_dir}/generate-diff.sh"
 
   local has_diff
-  has_diff=$(sed -n 's/^has_diff=//p' "${outputs}")
+  has_diff="$(sed -n 's/^has_diff=//p' "${outputs}")"
 
   if [ "${has_diff}" != "${expected_has_diff}" ]; then
     log_error "${name}: expected has_diff to be ${expected_has_diff}, got '${has_diff}'."

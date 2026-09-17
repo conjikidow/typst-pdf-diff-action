@@ -34,7 +34,7 @@ for file in ${TARGET_FILES}; do
     --output-diff="${diff_pdf}" \
     "${base_pdf}" \
     "${head_pdf}"
-  diff_rc=$?
+  diff_rc="$?"
   set -e
 
   if [ "${diff_rc}" -eq 0 ]; then
@@ -48,7 +48,7 @@ for file in ${TARGET_FILES}; do
   fi
 
   has_diff='true'
-  diff_count=$((diff_count + 1))
+  diff_count="$((diff_count + 1))"
   printf '%s\thas-diff\t%s\n' "${file}" "${diff_pdf}" >>"${result_tsv}"
 done
 

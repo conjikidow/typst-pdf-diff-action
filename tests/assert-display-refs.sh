@@ -1,13 +1,13 @@
 #!/bin/bash
 set -euo pipefail
 
-tests_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
+tests_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 src_dir="${tests_dir}/../src"
 
 # shellcheck disable=SC1091
 source "${src_dir}/common.sh"
 
-work_dir=$(mktemp -d)
+work_dir="$(mktemp -d)"
 trap 'rm -rf "${work_dir}"' EXIT
 
 make_repo() {
@@ -19,19 +19,19 @@ make_repo() {
   git -C "${repo}" rev-parse HEAD
 }
 
-head_sha=$(make_repo 'head-repo')
-base_sha=$(make_repo 'base-repo')
+head_sha="$(make_repo 'head-repo')"
+base_sha="$(make_repo 'base-repo')"
 
 status=0
 
 run_case() {
-  local name=$1
-  local resolved_head=$2
-  local resolved_base=$3
-  local head_dir=$4
-  local base_dir=$5
-  local expected_head=$6
-  local expected_base=$7
+  local name="$1"
+  local resolved_head="$2"
+  local resolved_base="$3"
+  local head_dir="$4"
+  local base_dir="$5"
+  local expected_head="$6"
+  local expected_base="$7"
 
   local outputs="${work_dir}/outputs"
   : >"${outputs}"
@@ -41,8 +41,8 @@ run_case() {
     bash "${src_dir}/determine-display-refs.sh" >/dev/null 2>&1
 
   local head_ref base_ref
-  head_ref=$(sed -n 's/^head_ref=//p' "${outputs}")
-  base_ref=$(sed -n 's/^base_ref=//p' "${outputs}")
+  head_ref="$(sed -n 's/^head_ref=//p' "${outputs}")"
+  base_ref="$(sed -n 's/^base_ref=//p' "${outputs}")"
 
   if [ "${head_ref}" != "${expected_head}" ]; then
     log_error "${name}: expected head_ref '${expected_head}', got '${head_ref}'."
