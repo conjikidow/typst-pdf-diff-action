@@ -71,8 +71,7 @@ runs:
       shell: bash
       run: |
         if [ "${RUNNER_OS}" != 'Linux' ]; then
-          echo '::error title=Unsupported runner::' \
-            'This action currently supports Linux runners only.'
+          echo '::error title=Unsupported runner::This action currently supports Linux runners only.'
           exit 1
         fi
 
