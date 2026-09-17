@@ -24,8 +24,8 @@ run_comment_call() {
   local status=0
 
   if [ "${COMMENT_MODE}" = 'replace' ]; then
-    if ! existing_ids=$(gh api "${list_endpoint}" --paginate \
-      --jq ".[] | select(.body | contains(\"${marker}\")) | .id"); then
+    if ! existing_ids="$(gh api "${list_endpoint}" --paginate \
+      --jq ".[] | select(.body | contains(\"${marker}\")) | .id")"; then
       return 1
     fi
 
@@ -39,7 +39,7 @@ run_comment_call() {
     exit 1
   fi
 
-  body_json=$(jq -Rs '{body: .}' "${COMMENT_FILE}")
+  body_json="$(jq -Rs '{body: .}' "${COMMENT_FILE}")"
   if ! gh api "${list_endpoint}" --method POST --input - <<<"${body_json}"; then
     status=1
   fi

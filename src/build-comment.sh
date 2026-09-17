@@ -15,11 +15,11 @@ fi
 
 while IFS=$'\t' read -r _file status _diff_pdf; do
   case "${status}" in
-  has-diff) diff_count=$((diff_count + 1)) ;;
-  no-diff) no_diff_count=$((no_diff_count + 1)) ;;
+  has-diff) diff_count="$((diff_count + 1))" ;;
+  no-diff) no_diff_count="$((no_diff_count + 1))" ;;
   missing-base | missing-head)
     has_missing='true'
-    missing_count=$((missing_count + 1))
+    missing_count="$((missing_count + 1))"
     ;;
   esac
 done <"${RESULT_TSV}"

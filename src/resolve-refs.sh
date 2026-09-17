@@ -4,14 +4,14 @@ set -euo pipefail
 # shellcheck disable=SC1091
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
-head_ref=${HEAD_REF_INPUT}
-base_ref=${BASE_REF_INPUT}
+head_ref="${HEAD_REF_INPUT}"
+base_ref="${BASE_REF_INPUT}"
 
 if [ -z "${head_ref}" ]; then
   if [ "${GITHUB_EVENT_NAME}" = 'pull_request' ] && [ -n "${PR_HEAD_SHA}" ]; then
-    head_ref=${PR_HEAD_SHA}
+    head_ref="${PR_HEAD_SHA}"
   else
-    head_ref=${GITHUB_SHA}
+    head_ref="${GITHUB_SHA}"
   fi
 fi
 
@@ -20,13 +20,13 @@ if [ -z "${base_ref}" ]; then
     # Use the merge-base so the diff reflects only the changes introduced by this PR,
     # not unrelated commits merged into the base branch in the meantime.
     require_cmd gh
-    base_ref=$(gh api "repos/{owner}/{repo}/compare/${PR_BASE_SHA}...${head_ref}" --jq '.merge_base_commit.sha')
+    base_ref="$(gh api "repos/{owner}/{repo}/compare/${PR_BASE_SHA}...${head_ref}" --jq '.merge_base_commit.sha')"
     if [ -z "${base_ref}" ]; then
       log_error 'Failed to determine the merge-base via the GitHub Compare API.'
       exit 1
     fi
   else
-    base_ref=${PUSH_BEFORE_SHA}
+    base_ref="${PUSH_BEFORE_SHA}"
   fi
 fi
 

@@ -1,13 +1,13 @@
 #!/bin/bash
 set -euo pipefail
 
-tests_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
+tests_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 src_dir="${tests_dir}/../src"
 
 # shellcheck disable=SC1091
 source "${src_dir}/common.sh"
 
-work_dir=$(mktemp -d)
+work_dir="$(mktemp -d)"
 trap 'rm -rf "${work_dir}"' EXIT
 mkdir -p "${work_dir}/head" "${work_dir}/base"
 
@@ -15,13 +15,13 @@ status=0
 
 # Remaining arguments override the default inputs as VAR=VALUE assignments.
 run_case() {
-  local name=$1
-  local expected_rc=$2
+  local name="$1"
+  local expected_rc="$2"
   shift 2
 
   local rc=0
   env HEAD_DIR='' BASE_DIR='' SUBMODULES='false' HEAD_REF='' BASE_REF='' "$@" \
-    bash "${src_dir}/validate-inputs.sh" >/dev/null 2>&1 || rc=$?
+    bash "${src_dir}/validate-inputs.sh" >/dev/null 2>&1 || rc="$?"
 
   if [ "${rc}" -ne "${expected_rc}" ]; then
     log_error "${name}: expected exit ${expected_rc}, got ${rc}."

@@ -12,9 +12,9 @@ status=0
 
 # Recompute the merge-base from the event payload with local git, so that this
 # assertion does not depend on the Compare API call that the action uses.
-expected_base=$(git merge-base "${PR_BASE_SHA}" "${EXPECTED_HEAD}")
-actual_base=$(git -C "${base_dir}" rev-parse HEAD)
-actual_head=$(git -C "${head_dir}" rev-parse HEAD)
+expected_base="$(git merge-base "${PR_BASE_SHA}" "${EXPECTED_HEAD}")"
+actual_base="$(git -C "${base_dir}" rev-parse HEAD)"
+actual_head="$(git -C "${head_dir}" rev-parse HEAD)"
 
 if [ "${actual_base}" != "${expected_base}" ]; then
   log_error "${base_dir} holds ${actual_base}, expected the merge-base ${expected_base}."

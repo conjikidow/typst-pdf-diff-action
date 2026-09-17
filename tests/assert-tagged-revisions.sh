@@ -10,10 +10,10 @@ head_dir='head-src'
 
 status=0
 
-expected_base=$(git rev-parse "${BASE_REV}^{commit}")
-expected_head=$(git rev-parse "${HEAD_REV}^{commit}")
-actual_base=$(git -C "${base_dir}" rev-parse HEAD)
-actual_head=$(git -C "${head_dir}" rev-parse HEAD)
+expected_base="$(git rev-parse "${BASE_REV}^{commit}")"
+expected_head="$(git rev-parse "${HEAD_REV}^{commit}")"
+actual_base="$(git -C "${base_dir}" rev-parse HEAD)"
+actual_head="$(git -C "${head_dir}" rev-parse HEAD)"
 
 if [ "${actual_base}" != "${expected_base}" ]; then
   log_error "${base_dir} holds ${actual_base}, expected ${BASE_REV} (${expected_base})."

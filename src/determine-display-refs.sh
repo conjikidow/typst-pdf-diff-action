@@ -5,22 +5,22 @@ set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
 determine_ref() {
-  local resolved=$1
-  local dir=$2
-  local role=$3
+  local resolved="$1"
+  local dir="$2"
+  local role="$3"
 
   if [ -n "${resolved}" ]; then
-    ref=${resolved}
+    ref="${resolved}"
     return
   fi
 
   # Without this guard, rev-parse would walk up and report a parent repository.
-  if [ -e "${dir}/.git" ] && ref=$(git -C "${dir}" rev-parse HEAD 2>/dev/null); then
+  if [ -e "${dir}/.git" ] && ref="$(git -C "${dir}" rev-parse HEAD 2>/dev/null)"; then
     return
   fi
 
   log_warn "Unable to determine the ${role} revision from '${dir}'; labeling it as '${role}'."
-  ref=${role}
+  ref="${role}"
 }
 
 determine_ref "${RESOLVED_HEAD_REF}" "${HEAD_DIR}" 'head'

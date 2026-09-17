@@ -10,7 +10,7 @@ sudo apt-get install -y --no-install-recommends \
   xvfb
 
 # xvfb-run prints its own errors to stderr and merges the wrapped command's stderr into stdout, so both streams are captured.
-if ! output=$(xvfb-run --auto-servernum diff-pdf --help 2>&1); then
+if ! output="$(xvfb-run --auto-servernum diff-pdf --help 2>&1)"; then
   log_error 'diff-pdf could not be executed under xvfb-run after installation.'
   echo "${output}" >&2
   exit 1

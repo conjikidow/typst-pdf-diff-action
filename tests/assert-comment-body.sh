@@ -1,13 +1,13 @@
 #!/bin/bash
 set -euo pipefail
 
-tests_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
+tests_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 src_dir="${tests_dir}/../src"
 
 # shellcheck disable=SC1091
 source "${src_dir}/common.sh"
 
-work_dir=$(mktemp -d)
+work_dir="$(mktemp -d)"
 trap 'rm -rf "${work_dir}"' EXIT
 
 result_tsv="${work_dir}/diff-results.tsv"
@@ -16,9 +16,9 @@ printf '%s\thas-diff\t%s\n' 'main.typ' 'build/diff/main.pdf' >"${result_tsv}"
 status=0
 
 run_case() {
-  local name=$1
-  local supplied_head_dir=$2
-  local note=$3
+  local name="$1"
+  local supplied_head_dir="$2"
+  local note="$3"
 
   # build-comment.sh writes to a fixed path relative to the working directory.
   local case_dir="${work_dir}/${name}"
