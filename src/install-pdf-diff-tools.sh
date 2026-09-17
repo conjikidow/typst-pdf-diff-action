@@ -12,7 +12,9 @@ sudo apt-get install -y --no-install-recommends \
 require_cmd diff-pdf
 require_cmd xvfb-run
 
-if ! xvfb-run --auto-servernum diff-pdf --help >/dev/null 2>&1; then
+# xvfb-run prints its own errors to stderr and merges the wrapped command's stderr into stdout, so both streams are captured.
+if ! output=$(xvfb-run --auto-servernum diff-pdf --help 2>&1); then
   log_error 'diff-pdf is installed but could not be executed.'
+  echo "${output}" >&2
   exit 1
 fi
