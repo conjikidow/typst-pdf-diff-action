@@ -22,7 +22,8 @@ A GitHub Action to generate PDF diffs for Typst documents.
 
 ## Usage
 
-The action requires a Linux runner with `gh` and `jq`, which the GitHub-hosted Ubuntu runner images provide.
+The action requires a Linux runner with passwordless `sudo apt-get`, `gh`, and `jq`,
+which the GitHub-hosted Ubuntu runner images provide.
 
 ### Workflow Example
 
