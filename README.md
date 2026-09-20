@@ -18,7 +18,7 @@ A GitHub Action to generate PDF diffs for Typst documents.
 - Builds Typst documents from separate base and head revisions.
 - Generates diff PDFs with [`diff-pdf`](https://github.com/vslavik/diff-pdf).
 - Uploads head PDFs and diff PDFs as workflow artifacts.
-- Optionally creates or updates a pull request comment.
+- Optionally creates or updates a pull request (PR) comment.
 
 ## Usage
 
@@ -27,7 +27,7 @@ which the GitHub-hosted Ubuntu runner images provide.
 
 ### Workflow Example
 
-The following workflow runs on pull requests, compares the PR head against
+The following workflow runs on PRs, compares the PR head against
 the merge-base (the commit where the PR branched off the base branch),
 uploads the generated PDFs, and updates a PR comment.
 
@@ -112,7 +112,7 @@ so what it needs depends on which of them run.
 | Scope                  | Needed for                                                                                        |
 | ---------------------- | ------------------------------------------------------------------------------------------------- |
 | `contents: read`       | Resolving the revisions and checking them out. Not needed when `head-dir` and `base-dir` are set. |
-| `pull-requests: write` | Updating the pull request comment. Not needed when `post-comment` is `false`.                     |
+| `pull-requests: write` | Updating the PR comment. Not needed when `post-comment` is `false`.                               |
 
 The default `${{ github.token }}` carries whatever the workflow grants it,
 so grant those scopes in the job, as the first example above does.
@@ -124,24 +124,24 @@ which is why that example zeroes it with `permissions: {}`.
 
 ### Inputs
 
-| Name                    | Description                                                                      | Required | Default               |
-| ----------------------- | -------------------------------------------------------------------------------- | -------- | --------------------- |
-| `target-files`          | Space-separated Typst entrypoint files to compile.                               | Yes      | -                     |
-| `typst-version`         | Version of Typst to use.                                                         | No       | `'latest'`            |
-| `submodules`            | Submodule mode passed to `actions/checkout`: `false`, `true`, or `recursive`.    | No       | `'false'`             |
-| `head-ref`              | Head revision to compare. Defaults to the pull request head SHA or `github.sha`. | No       | `''`                  |
-| `base-ref`              | Base revision to compare. Defaults to the merge-base or `github.event.before`.   | No       | `''`                  |
-| `post-comment`          | Whether to update a pull request comment with the diff results.                  | No       | `'true'`              |
-| `comment-mode`          | Comment update mode: `replace` or `append`.                                      | No       | `'replace'`           |
-| `fail-on-comment-error` | Whether to fail the action when the comment update fails.                        | No       | `'false'`             |
-| `upload-artifacts`      | Whether to upload the head and diff PDFs as workflow artifacts.                  | No       | `'true'`              |
-| `github-token`          | Token used to authenticate with GitHub.                                          | No       | `${{ github.token }}` |
+| Name                    | Description                                                                    | Required | Default               |
+| ----------------------- | ------------------------------------------------------------------------------ | -------- | --------------------- |
+| `target-files`          | Space-separated Typst entrypoint files to compile.                             | Yes      | -                     |
+| `typst-version`         | Version of Typst to use.                                                       | No       | `'latest'`            |
+| `submodules`            | Submodule mode passed to `actions/checkout`: `false`, `true`, or `recursive`.  | No       | `'false'`             |
+| `head-ref`              | Head revision to compare. Defaults to the PR head SHA or `github.sha`.         | No       | `''`                  |
+| `base-ref`              | Base revision to compare. Defaults to the merge-base or `github.event.before`. | No       | `''`                  |
+| `post-comment`          | Whether to update a PR comment with the diff results.                          | No       | `'true'`              |
+| `comment-mode`          | Comment update mode: `replace` or `append`.                                    | No       | `'replace'`           |
+| `fail-on-comment-error` | Whether to fail the action when the comment update fails.                      | No       | `'false'`             |
+| `upload-artifacts`      | Whether to upload the head and diff PDFs as workflow artifacts.                | No       | `'true'`              |
+| `github-token`          | Token used to authenticate with GitHub.                                        | No       | `${{ github.token }}` |
 
 `target-files` is interpreted as a space-separated list, for example `main.typ appendix.typ`.
 
 > [!NOTE]
 > `post-comment: 'true'` is intended for `pull_request` events.
-> On other events, the action skips pull request comment updates.
+> On other events, the action skips PR comment updates.
 
 #### Advanced Inputs
 
@@ -172,7 +172,7 @@ for example when your submodules live under more than one owner and therefore ne
 The action then builds and compares the directories you provide, and checks out nothing.
 
 Resolving the base revision is then up to you.
-For a pull request, compare against the merge-base rather than the base branch tip,
+For a PR, compare against the merge-base rather than the base branch tip,
 or the diff will also contain unrelated changes merged into the base branch in the meantime.
 
 ```yaml
