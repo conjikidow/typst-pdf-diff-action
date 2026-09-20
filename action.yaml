@@ -15,15 +15,15 @@ inputs:
     required: false
     default: 'false'
   head-ref:
-    description: 'Head revision to compare. Defaults to the pull request head SHA or `github.sha`.'
+    description: 'Head revision to compare. Defaults to the PR head SHA or `github.sha`.'
     required: false
     default: ''
   base-ref:
-    description: 'Base revision to compare. Defaults to the merge-base of the pull request or `github.event.before`.'
+    description: 'Base revision to compare. Defaults to the merge-base of the PR or `github.event.before`.'
     required: false
     default: ''
   post-comment:
-    description: 'Whether to update a pull request comment with the diff results.'
+    description: 'Whether to update a PR comment with the diff results.'
     required: false
     default: 'true'
   comment-mode:
