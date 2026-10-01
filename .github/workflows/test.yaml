@@ -14,8 +14,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
 
@@ -85,7 +84,6 @@ jobs:
     name: Test supplied working trees
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    permissions: {}
 
     steps:
       - name: Checkout the main repository
@@ -146,6 +144,8 @@ jobs:
     name: Test input validation
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout the main repository
@@ -160,6 +160,8 @@ jobs:
     name: Test display revisions
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout the main repository
@@ -174,6 +176,8 @@ jobs:
     name: Test build and diff
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout the main repository
@@ -194,6 +198,8 @@ jobs:
     name: Test comment body
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout the main repository
