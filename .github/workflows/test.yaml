@@ -8,11 +8,15 @@ on:
       - reopened
   push:
     branches:
-      - main
+      - 'main'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+defaults:
+  run:
+    shell: bash
 
 permissions: {}
 
@@ -27,8 +31,8 @@ jobs:
     permissions:
       contents: read
     env:
-      BASE_REV: v0.1.0
-      HEAD_REV: v0.2.0
+      BASE_REV: 'v0.1.0'
+      HEAD_REV: 'v0.2.0'
 
     steps:
       - name: Checkout the main repository
@@ -44,8 +48,8 @@ jobs:
           target-files: missing.typ
           base-ref: ${{ env.BASE_REV }}
           head-ref: ${{ env.HEAD_REV }}
-          post-comment: 'false'
-          upload-artifacts: 'false'
+          post-comment: false
+          upload-artifacts: false
 
       - name: Assert that the requested revisions were checked out
         env:
@@ -71,8 +75,8 @@ jobs:
         uses: $/
         with:
           target-files: missing.typ
-          post-comment: 'false'
-          upload-artifacts: 'false'
+          post-comment: false
+          upload-artifacts: false
 
       - name: Assert that the merge-base was used as the base revision
         env:
@@ -104,13 +108,13 @@ jobs:
           target-files: sample.typ
           head-dir: trees/head
           base-dir: trees/base
-          post-comment: 'false'
-          upload-artifacts: 'false'
+          post-comment: false
+          upload-artifacts: false
 
       - name: Assert that a diff was reported
         env:
           HAS_DIFF: ${{ steps.differing.outputs.has-diff }}
-          EXPECTED_HAS_DIFF: 'true'
+          EXPECTED_HAS_DIFF: true
         run: bash tests/assert-has-diff.sh
 
       - name: Assert that no sources were checked out (differing trees)
@@ -126,13 +130,13 @@ jobs:
           target-files: sample.typ
           head-dir: trees/head
           base-dir: trees/base
-          post-comment: 'false'
-          upload-artifacts: 'false'
+          post-comment: false
+          upload-artifacts: false
 
       - name: Assert that no diff was reported
         env:
           HAS_DIFF: ${{ steps.identical.outputs.has-diff }}
-          EXPECTED_HAS_DIFF: 'false'
+          EXPECTED_HAS_DIFF: false
         run: bash tests/assert-has-diff.sh
 
       - name: Assert that no sources were checked out (identical trees)
