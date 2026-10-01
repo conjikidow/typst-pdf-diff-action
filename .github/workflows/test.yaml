@@ -78,7 +78,7 @@ jobs:
       - name: Assert that the merge-base was used as the base revision
         env:
           PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: bash tests/assert-merge-base-revisions.sh
 
   test-supplied-working-trees:
@@ -115,7 +115,7 @@ jobs:
           EXPECTED_HAS_DIFF: 'true'
         run: bash tests/assert-has-diff.sh
 
-      - name: Assert that no sources were checked out
+      - name: Assert that no sources were checked out (differing trees)
         run: bash tests/assert-no-checkout.sh
 
       - name: Prepare identical working trees
@@ -137,7 +137,7 @@ jobs:
           EXPECTED_HAS_DIFF: 'false'
         run: bash tests/assert-has-diff.sh
 
-      - name: Assert that no sources were checked out for identical trees
+      - name: Assert that no sources were checked out (identical trees)
         run: bash tests/assert-no-checkout.sh
 
   # Exercise the individual scripts, in the order the action runs them.
