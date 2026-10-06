@@ -1,6 +1,10 @@
-name: 'Typst PDF Diff Action'
+name: Typst PDF Diff Action
 description: 'Generate PDF diffs for Typst documents'
-author: 'conjikidow'
+author: conjikidow
+
+branding:
+  icon: file-text
+  color: green
 
 inputs:
   target-files:
@@ -13,7 +17,7 @@ inputs:
   submodules:
     description: 'Submodule mode passed to `actions/checkout`: `false`, `true`, or `recursive`.'
     required: false
-    default: 'false'
+    default: false
   head-ref:
     description: 'Head revision to compare. Defaults to the PR head SHA or `github.sha`.'
     required: false
@@ -25,19 +29,19 @@ inputs:
   post-comment:
     description: 'Whether to update a PR comment with the diff results.'
     required: false
-    default: 'true'
+    default: true
   comment-mode:
     description: 'Comment update mode: `replace` or `append`.'
     required: false
-    default: 'replace'
+    default: replace
   fail-on-comment-error:
     description: 'Whether to fail the action when the comment update fails.'
     required: false
-    default: 'false'
+    default: false
   upload-artifacts:
     description: 'Whether to upload the head and diff PDFs as workflow artifacts.'
     required: false
-    default: 'true'
+    default: true
   github-token:
     description: >-
       Token used to authenticate with GitHub. Needs `contents: read` for the
@@ -65,7 +69,8 @@ outputs:
     value: ${{ steps.upload-diff-pdfs.outputs.artifact-url }}
 
 runs:
-  using: 'composite'
+  using: composite
+
   steps:
     - name: Check runner platform
       shell: bash
@@ -181,7 +186,7 @@ runs:
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:
         name: ${{ steps.determine-artifact-names.outputs.head_artifact_name }}
-        path: build/head/**/*.pdf
+        path: 'build/head/**/*.pdf'
         if-no-files-found: error
 
     - name: Upload diff PDFs artifact
@@ -190,7 +195,7 @@ runs:
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:
         name: ${{ steps.determine-artifact-names.outputs.diff_artifact_name }}
-        path: build/diff/**/*.pdf
+        path: 'build/diff/**/*.pdf'
         if-no-files-found: error
 
     - name: Build PR comment body
@@ -198,9 +203,9 @@ runs:
       shell: bash
       env:
         SUPPLIED_HEAD_DIR: ${{ inputs.head-dir }}
-        RESULT_TSV: ${{ steps.generate-diff.outputs.result_tsv }}
         HEAD_REF: ${{ steps.display-refs.outputs.head_ref }}
         BASE_REF: ${{ steps.display-refs.outputs.base_ref }}
+        RESULT_TSV: ${{ steps.generate-diff.outputs.result_tsv }}
         HEAD_ARTIFACT_URL: ${{ steps.upload-head-pdfs.outputs.artifact-url }}
         DIFF_ARTIFACT_URL: ${{ steps.upload-diff-pdfs.outputs.artifact-url }}
       run: bash "${{ github.action_path }}/src/build-comment.sh"
@@ -216,7 +221,3 @@ runs:
         FAIL_ON_COMMENT_ERROR: ${{ inputs.fail-on-comment-error }}
         COMMENT_FILE: build/meta/pr-comment.md
       run: bash "${{ github.action_path }}/src/post-comment.sh"
-
-branding:
-  icon: 'file-text'
-  color: 'green'
