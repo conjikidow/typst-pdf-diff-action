@@ -60,7 +60,7 @@ inputs:
 outputs:
   has-diff:
     description: '`true` when at least one target file produces a diff PDF.'
-    value: ${{ steps.generate-diff.outputs.has_diff }}
+    value: ${{ steps.generate-diff.outputs.has-diff }}
   head-artifact-url:
     description: 'URL of the uploaded head PDF artifact. Empty when `upload-artifacts` is `false`.'
     value: ${{ steps.upload-head-pdfs.outputs.artifact-url }}
@@ -88,11 +88,11 @@ runs:
         BASE_REF: ${{ inputs.base-ref }}
         HEAD_DIR: ${{ inputs.head-dir }}
         BASE_DIR: ${{ inputs.base-dir }}
-      run: bash "${{ github.action_path }}/src/validate-inputs.sh"
+      run: bash "${GITHUB_ACTION_PATH}/src/validate-inputs.sh"
 
     - name: Resolve comparison revisions
-      id: resolve-refs
-      if: ${{ inputs.head-dir == '' }}
+      id: resolve-revisions
+      if: inputs.head-dir == ''
       shell: bash
       env:
         GH_TOKEN: ${{ inputs.github-token }}
@@ -102,43 +102,43 @@ runs:
         PUSH_BEFORE_SHA: ${{ github.event.before }}
         HEAD_REF_INPUT: ${{ inputs.head-ref }}
         BASE_REF_INPUT: ${{ inputs.base-ref }}
-      run: bash "${{ github.action_path }}/src/resolve-refs.sh"
+      run: bash "${GITHUB_ACTION_PATH}/src/resolve-refs.sh"
 
     - name: Determine display revisions
-      id: display-refs
+      id: display-revisions
       shell: bash
       env:
         HEAD_DIR: ${{ inputs.head-dir }}
         BASE_DIR: ${{ inputs.base-dir }}
-        RESOLVED_HEAD_REF: ${{ steps.resolve-refs.outputs.head_ref }}
-        RESOLVED_BASE_REF: ${{ steps.resolve-refs.outputs.base_ref }}
-      run: bash "${{ github.action_path }}/src/determine-display-refs.sh"
+        RESOLVED_HEAD_REF: ${{ steps.resolve-revisions.outputs.head-ref }}
+        RESOLVED_BASE_REF: ${{ steps.resolve-revisions.outputs.base-ref }}
+      run: bash "${GITHUB_ACTION_PATH}/src/determine-display-refs.sh"
 
     - name: Determine artifact names
       id: determine-artifact-names
       shell: bash
       env:
         PR_NUMBER: ${{ github.event.pull_request.number }}
-        HEAD_REF: ${{ steps.display-refs.outputs.head_ref }}
-      run: bash "${{ github.action_path }}/src/determine-artifact-names.sh"
+        HEAD_REF: ${{ steps.display-revisions.outputs.head-ref }}
+      run: bash "${GITHUB_ACTION_PATH}/src/determine-artifact-names.sh"
 
     - name: Checkout the head revision
-      if: ${{ inputs.head-dir == '' }}
+      if: inputs.head-dir == ''
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         path: head-src
-        ref: ${{ steps.resolve-refs.outputs.head_ref }}
+        ref: ${{ steps.resolve-revisions.outputs.head-ref }}
         submodules: ${{ inputs.submodules }}
         token: ${{ inputs.github-token }}
         fetch-depth: 1
         persist-credentials: false
 
     - name: Checkout the base revision
-      if: ${{ inputs.head-dir == '' }}
+      if: inputs.head-dir == ''
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         path: base-src
-        ref: ${{ steps.resolve-refs.outputs.base_ref }}
+        ref: ${{ steps.resolve-revisions.outputs.base-ref }}
         submodules: ${{ inputs.submodules }}
         token: ${{ inputs.github-token }}
         fetch-depth: 1
@@ -151,7 +151,7 @@ runs:
 
     - name: Install PDF diff tools
       shell: bash
-      run: bash "${{ github.action_path }}/src/install-pdf-diff-tools.sh"
+      run: bash "${GITHUB_ACTION_PATH}/src/install-pdf-diff-tools.sh"
 
     - name: Build head PDFs
       shell: bash
@@ -159,7 +159,7 @@ runs:
         TARGET_FILES: ${{ inputs.target-files }}
         SOURCE_DIR: ${{ inputs.head-dir || 'head-src' }}
         OUTPUT_DIR: build/head
-      run: bash "${{ github.action_path }}/src/build-pdfs.sh"
+      run: bash "${GITHUB_ACTION_PATH}/src/build-pdfs.sh"
 
     - name: Build base PDFs
       shell: bash
@@ -167,7 +167,7 @@ runs:
         TARGET_FILES: ${{ inputs.target-files }}
         SOURCE_DIR: ${{ inputs.base-dir || 'base-src' }}
         OUTPUT_DIR: build/base
-      run: bash "${{ github.action_path }}/src/build-pdfs.sh"
+      run: bash "${GITHUB_ACTION_PATH}/src/build-pdfs.sh"
 
     - name: Generate PDF diff
       id: generate-diff
@@ -178,40 +178,42 @@ runs:
         HEAD_DIR: build/head
         DIFF_DIR: build/diff
         META_DIR: build/meta
-      run: bash "${{ github.action_path }}/src/generate-diff.sh"
+      run: bash "${GITHUB_ACTION_PATH}/src/generate-diff.sh"
 
     - name: Upload head PDFs artifact
       id: upload-head-pdfs
-      if: ${{ inputs.upload-artifacts == 'true' }}
+      if: inputs.upload-artifacts == 'true'
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:
-        name: ${{ steps.determine-artifact-names.outputs.head_artifact_name }}
+        name: ${{ steps.determine-artifact-names.outputs.head-artifact-name }}
         path: 'build/head/**/*.pdf'
         if-no-files-found: error
 
     - name: Upload diff PDFs artifact
       id: upload-diff-pdfs
-      if: ${{ inputs.upload-artifacts == 'true' && steps.generate-diff.outputs.has_diff == 'true' }}
+      if: >-
+        inputs.upload-artifacts == 'true'
+        && steps.generate-diff.outputs.has-diff == 'true'
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:
-        name: ${{ steps.determine-artifact-names.outputs.diff_artifact_name }}
+        name: ${{ steps.determine-artifact-names.outputs.diff-artifact-name }}
         path: 'build/diff/**/*.pdf'
         if-no-files-found: error
 
-    - name: Build PR comment body
-      if: ${{ inputs.post-comment == 'true' }}
+    - name: Build pull request comment body
+      if: inputs.post-comment == 'true'
       shell: bash
       env:
         SUPPLIED_HEAD_DIR: ${{ inputs.head-dir }}
-        HEAD_REF: ${{ steps.display-refs.outputs.head_ref }}
-        BASE_REF: ${{ steps.display-refs.outputs.base_ref }}
-        RESULT_TSV: ${{ steps.generate-diff.outputs.result_tsv }}
+        HEAD_REF: ${{ steps.display-revisions.outputs.head-ref }}
+        BASE_REF: ${{ steps.display-revisions.outputs.base-ref }}
+        RESULT_TSV: ${{ steps.generate-diff.outputs.result-tsv }}
         HEAD_ARTIFACT_URL: ${{ steps.upload-head-pdfs.outputs.artifact-url }}
         DIFF_ARTIFACT_URL: ${{ steps.upload-diff-pdfs.outputs.artifact-url }}
-      run: bash "${{ github.action_path }}/src/build-comment.sh"
+      run: bash "${GITHUB_ACTION_PATH}/src/build-comment.sh"
 
-    - name: Update PR comment
-      if: ${{ inputs.post-comment == 'true' }}
+    - name: Update pull request comment
+      if: inputs.post-comment == 'true'
       shell: bash
       env:
         GH_TOKEN: ${{ inputs.github-token }}
@@ -220,4 +222,4 @@ runs:
         COMMENT_MODE: ${{ inputs.comment-mode }}
         FAIL_ON_COMMENT_ERROR: ${{ inputs.fail-on-comment-error }}
         COMMENT_FILE: build/meta/pr-comment.md
-      run: bash "${{ github.action_path }}/src/post-comment.sh"
+      run: bash "${GITHUB_ACTION_PATH}/src/post-comment.sh"

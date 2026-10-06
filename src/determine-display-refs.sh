@@ -24,7 +24,7 @@ determine_ref() {
 }
 
 determine_ref "${RESOLVED_HEAD_REF}" "${HEAD_DIR}" 'head'
-write_output 'head_ref' "${ref}"
+write_output 'head-ref' "${ref}"
 
 determine_ref "${RESOLVED_BASE_REF}" "${BASE_DIR}" 'base'
-write_output 'base_ref' "${ref}"
+write_output 'base-ref' "${ref}"
