@@ -41,16 +41,16 @@ run_case() {
     bash "${src_dir}/determine-display-refs.sh" >/dev/null 2>&1
 
   local head_ref base_ref
-  head_ref="$(sed -n 's/^head_ref=//p' "${outputs}")"
-  base_ref="$(sed -n 's/^base_ref=//p' "${outputs}")"
+  head_ref="$(sed -n 's/^head-ref=//p' "${outputs}")"
+  base_ref="$(sed -n 's/^base-ref=//p' "${outputs}")"
 
   if [ "${head_ref}" != "${expected_head}" ]; then
-    log_error "${name}: expected head_ref '${expected_head}', got '${head_ref}'."
+    log_error "${name}: expected head-ref '${expected_head}', got '${head_ref}'."
     status=1
   fi
 
   if [ "${base_ref}" != "${expected_base}" ]; then
-    log_error "${name}: expected base_ref '${expected_base}', got '${base_ref}'."
+    log_error "${name}: expected base-ref '${expected_base}', got '${base_ref}'."
     status=1
   fi
 }

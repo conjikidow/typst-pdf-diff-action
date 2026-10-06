@@ -32,10 +32,10 @@ run_case() {
     bash "${src_dir}/generate-diff.sh"
 
   local has_diff
-  has_diff="$(sed -n 's/^has_diff=//p' "${outputs}")"
+  has_diff="$(sed -n 's/^has-diff=//p' "${outputs}")"
 
   if [ "${has_diff}" != "${expected_has_diff}" ]; then
-    log_error "${name}: expected has_diff to be ${expected_has_diff}, got '${has_diff}'."
+    log_error "${name}: expected has-diff to be ${expected_has_diff}, got '${has_diff}'."
     status=1
   fi
 

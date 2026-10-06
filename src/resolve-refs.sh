@@ -35,5 +35,5 @@ if [ -z "${base_ref}" ] || [ "${base_ref}" = '0000000000000000000000000000000000
   exit 1
 fi
 
-write_output 'head_ref' "${head_ref}"
-write_output 'base_ref' "${base_ref}"
+write_output 'head-ref' "${head_ref}"
+write_output 'base-ref' "${base_ref}"

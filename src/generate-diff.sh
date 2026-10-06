@@ -52,6 +52,6 @@ for file in ${TARGET_FILES}; do
   printf '%s\thas-diff\t%s\n' "${file}" "${diff_pdf}" >>"${result_tsv}"
 done
 
-write_output 'has_diff' "${has_diff}"
-write_output 'diff_count' "${diff_count}"
-write_output 'result_tsv' "${result_tsv}"
+write_output 'has-diff' "${has_diff}"
+write_output 'diff-count' "${diff_count}"
+write_output 'result-tsv' "${result_tsv}"

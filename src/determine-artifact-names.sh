@@ -13,5 +13,5 @@ else
   suffix="${head_ref_short}"
 fi
 
-write_output 'head_artifact_name' "${repo_name}-head-pdfs-${suffix}"
-write_output 'diff_artifact_name' "${repo_name}-diff-pdfs-${suffix}"
+write_output 'head-artifact-name' "${repo_name}-head-pdfs-${suffix}"
+write_output 'diff-artifact-name' "${repo_name}-diff-pdfs-${suffix}"
