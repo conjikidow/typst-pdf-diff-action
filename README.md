@@ -32,18 +32,22 @@ the merge-base (the commit where the PR branched off the base branch),
 uploads the generated PDFs, and updates a PR comment.
 
 ```yaml
-name: Typst PDF Diff
+name: Generate Typst PDF diff
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 jobs:
-  typst-pdf-diff:
+  generate-typst-pdf-diff:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       pull-requests: write
+
     steps:
       - name: Generate Typst PDF diff
         uses: conjikidow/typst-pdf-diff-action@v0.3.2
@@ -56,26 +60,31 @@ For production workflows, consider pinning each action to a full-length commit S
 as [GitHub recommends](https://docs.github.com/en/actions/reference/security/secure-use#using-third-party-actions).
 Releases of this action are immutable, so its own tags are already locked to a single commit.
 
-If your Typst project uses submodules, set `submodules: 'recursive'` and pass a
+If your Typst project uses submodules, set `submodules: recursive` and pass a
 token that can access those submodules.
 
 ```yaml
-name: Typst PDF Diff
+name: Generate Typst PDF diff
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 env:
   TYPST_TARGET_FILES: paper/main.typ slides/main.typ
 
 jobs:
-  typst-pdf-diff:
+  generate-typst-pdf-diff:
     runs-on: ubuntu-latest
     permissions: {}
+
     steps:
-      - uses: actions/create-github-app-token@v3
+      - name: Generate GitHub App token
         id: app-token
+        uses: actions/create-github-app-token@v3
         with:
           client-id: ${{ vars.GH_APP_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
@@ -84,12 +93,13 @@ jobs:
             private-submodule
           permission-contents: read
           permission-pull-requests: write
+
       - name: Generate Typst PDF diff
         uses: conjikidow/typst-pdf-diff-action@v0.3.2
         with:
           target-files: ${{ env.TYPST_TARGET_FILES }}
           github-token: ${{ steps.app-token.outputs.token }}
-          submodules: 'recursive'
+          submodules: recursive
 ```
 
 > [!IMPORTANT]
@@ -128,19 +138,19 @@ which is why that example zeroes it with `permissions: {}`.
 | ----------------------- | ------------------------------------------------------------------------------ | -------- | --------------------- |
 | `target-files`          | Space-separated Typst entrypoint files to compile.                             | Yes      | -                     |
 | `typst-version`         | Version of Typst to use.                                                       | No       | `'latest'`            |
-| `submodules`            | Submodule mode passed to `actions/checkout`: `false`, `true`, or `recursive`.  | No       | `'false'`             |
+| `submodules`            | Submodule mode passed to `actions/checkout`: `false`, `true`, or `recursive`.  | No       | `false`               |
 | `head-ref`              | Head revision to compare. Defaults to the PR head SHA or `github.sha`.         | No       | `''`                  |
 | `base-ref`              | Base revision to compare. Defaults to the merge-base or `github.event.before`. | No       | `''`                  |
-| `post-comment`          | Whether to update a PR comment with the diff results.                          | No       | `'true'`              |
-| `comment-mode`          | Comment update mode: `replace` or `append`.                                    | No       | `'replace'`           |
-| `fail-on-comment-error` | Whether to fail the action when the comment update fails.                      | No       | `'false'`             |
-| `upload-artifacts`      | Whether to upload the head and diff PDFs as workflow artifacts.                | No       | `'true'`              |
+| `post-comment`          | Whether to update a PR comment with the diff results.                          | No       | `true`                |
+| `comment-mode`          | Comment update mode: `replace` or `append`.                                    | No       | `replace`             |
+| `fail-on-comment-error` | Whether to fail the action when the comment update fails.                      | No       | `false`               |
+| `upload-artifacts`      | Whether to upload the head and diff PDFs as workflow artifacts.                | No       | `true`                |
 | `github-token`          | Token used to authenticate with GitHub.                                        | No       | `${{ github.token }}` |
 
 `target-files` is interpreted as a space-separated list, for example `main.typ appendix.typ`.
 
 > [!NOTE]
-> `post-comment: 'true'` is intended for `pull_request` events.
+> `post-comment: true` is intended for `pull_request` events.
 > On other events, the action skips PR comment updates.
 
 #### Advanced Inputs
@@ -176,8 +186,9 @@ For a PR, compare against the merge-base rather than the base branch tip,
 or the diff will also contain unrelated changes merged into the base branch in the meantime.
 
 ```yaml
-      - uses: actions/create-github-app-token@v3
+      - name: Generate GitHub App token
         id: app-token
+        uses: actions/create-github-app-token@v3
         with:
           client-id: ${{ vars.GH_APP_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
@@ -188,25 +199,27 @@ or the diff will also contain unrelated changes merged into the base branch in t
         id: merge-base
         env:
           GH_TOKEN: ${{ github.token }}
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          sha=$(gh api "repos/${GITHUB_REPOSITORY}/compare/${BASE_SHA}...${HEAD_SHA}" --jq '.merge_base_commit.sha')
-          echo "sha=${sha}" >>"$GITHUB_OUTPUT"
+          sha=$(gh api "repos/${GITHUB_REPOSITORY}/compare/${PR_BASE_SHA}...${PR_HEAD_SHA}" --jq '.merge_base_commit.sha')
+          echo "sha=${sha}" >> "${GITHUB_OUTPUT}"
 
-      - uses: actions/checkout@v7
+      - name: Checkout the head revision
+        uses: actions/checkout@v7
         with:
           path: head-src
           ref: ${{ github.event.pull_request.head.sha }}
           persist-credentials: false
 
-      - uses: actions/checkout@v7
+      - name: Checkout the base revision
+        uses: actions/checkout@v7
         with:
           path: base-src
           ref: ${{ steps.merge-base.outputs.sha }}
           persist-credentials: false
 
-      - name: Check out the required submodules
+      - name: Checkout the required submodules
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
