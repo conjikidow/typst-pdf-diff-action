@@ -31,7 +31,7 @@ if [ -z "${resolved_base_revision}" ]; then
 fi
 
 if [ -z "${resolved_base_revision}" ] || [ "${resolved_base_revision}" = '0000000000000000000000000000000000000000' ]; then
-  log_error 'Unable to determine the base revision. Set the base-ref input explicitly.'
+  log_error 'Unable to determine the base revision. Set the base-revision input explicitly.'
   exit 1
 fi
 

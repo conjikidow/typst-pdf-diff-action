@@ -39,8 +39,8 @@ run_case 'missing head directory' 1 HEAD_DIR="${work_dir}/absent" BASE_DIR="${wo
 run_case 'missing base directory' 1 HEAD_DIR="${work_dir}/head" BASE_DIR="${work_dir}/absent"
 run_case 'identical directories' 1 HEAD_DIR="${work_dir}/head" BASE_DIR="${work_dir}/head"
 run_case 'submodules with directories' 1 "${both_dirs[@]}" SUBMODULES='recursive'
-run_case 'head-ref with directories' 1 "${both_dirs[@]}" HEAD_REVISION='aaa111'
-run_case 'base-ref with directories' 1 "${both_dirs[@]}" BASE_REVISION='bbb222'
-run_case 'refs without directories' 0 HEAD_REVISION='aaa111' BASE_REVISION='bbb222'
+run_case 'head-revision with directories' 1 "${both_dirs[@]}" HEAD_REVISION='aaa111'
+run_case 'base-revision with directories' 1 "${both_dirs[@]}" BASE_REVISION='bbb222'
+run_case 'revisions without directories' 0 HEAD_REVISION='aaa111' BASE_REVISION='bbb222'
 
 exit "${status}"

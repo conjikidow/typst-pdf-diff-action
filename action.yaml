@@ -18,12 +18,16 @@ inputs:
     description: 'Submodule mode passed to `actions/checkout`: `false`, `true`, or `recursive`.'
     required: false
     default: false
-  head-ref:
-    description: 'Head revision to compare. Defaults to the PR head SHA or `github.sha`.'
+  head-revision:
+    description: >-
+      Head revision to compare, as a branch, tag, or commit SHA.
+      Defaults to the PR head SHA or `github.sha`.
     required: false
     default: ''
-  base-ref:
-    description: 'Base revision to compare. Defaults to the merge-base of the PR or `github.event.before`.'
+  base-revision:
+    description: >-
+      Base revision to compare, as a branch, tag, or commit SHA.
+      Defaults to the merge-base of the PR or `github.event.before`.
     required: false
     default: ''
   post-comment:
@@ -84,8 +88,8 @@ runs:
       shell: bash
       env:
         SUBMODULES: ${{ inputs.submodules }}
-        HEAD_REVISION: ${{ inputs.head-ref }}
-        BASE_REVISION: ${{ inputs.base-ref }}
+        HEAD_REVISION: ${{ inputs.head-revision }}
+        BASE_REVISION: ${{ inputs.base-revision }}
         HEAD_DIR: ${{ inputs.head-dir }}
         BASE_DIR: ${{ inputs.base-dir }}
       run: bash "${GITHUB_ACTION_PATH}/src/validate-inputs.sh"
@@ -100,8 +104,8 @@ runs:
         PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
         PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         PUSH_BEFORE_SHA: ${{ github.event.before }}
-        HEAD_REVISION: ${{ inputs.head-ref }}
-        BASE_REVISION: ${{ inputs.base-ref }}
+        HEAD_REVISION: ${{ inputs.head-revision }}
+        BASE_REVISION: ${{ inputs.base-revision }}
       run: bash "${GITHUB_ACTION_PATH}/src/resolve-revisions.sh"
 
     - name: Determine display revisions

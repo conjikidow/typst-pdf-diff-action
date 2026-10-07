@@ -46,8 +46,8 @@ jobs:
         uses: $/
         with:
           target-files: missing.typ
-          base-ref: ${{ env.BASE_REVISION }}
-          head-ref: ${{ env.HEAD_REVISION }}
+          base-revision: ${{ env.BASE_REVISION }}
+          head-revision: ${{ env.HEAD_REVISION }}
           post-comment: false
           upload-artifacts: false
 
