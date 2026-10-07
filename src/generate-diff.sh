@@ -9,7 +9,6 @@ result_tsv="${META_DIR}/diff-results.tsv"
 : >"${result_tsv}"
 
 has_diff='false'
-diff_count=0
 
 for file in ${TARGET_FILES}; do
   rel="${file%.typ}"
@@ -48,10 +47,8 @@ for file in ${TARGET_FILES}; do
   fi
 
   has_diff='true'
-  diff_count="$((diff_count + 1))"
   printf '%s\thas-diff\t%s\n' "${file}" "${diff_pdf}" >>"${result_tsv}"
 done
 
 write_output 'has-diff' "${has_diff}"
-write_output 'diff-count' "${diff_count}"
 write_output 'result-tsv' "${result_tsv}"
