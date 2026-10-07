@@ -52,8 +52,8 @@ if run_comment_call; then
 fi
 
 if [ "$(normalize_bool "${FAIL_ON_COMMENT_ERROR}")" = 'true' ]; then
-  log_error 'Failed to post the pull request comment.'
+  log_error 'Failed to post the pull request comment or to delete earlier ones.'
   exit 1
 fi
 
-log_warn 'Failed to post the pull request comment.'
+log_warn 'Failed to post the pull request comment or to delete earlier ones.'

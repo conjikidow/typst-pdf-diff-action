@@ -143,7 +143,7 @@ which is why that example zeroes it with `permissions: {}`.
 | `base-ref`              | Base revision to compare. Defaults to the merge-base or `github.event.before`. | No       | `''`                  |
 | `post-comment`          | Whether to post a PR comment with the diff results.                            | No       | `true`                |
 | `comment-mode`          | Handling of earlier comments: `replace` deletes them, `append` keeps them.     | No       | `replace`             |
-| `fail-on-comment-error` | Whether to fail the action when posting the comment fails.                     | No       | `false`               |
+| `fail-on-comment-error` | Whether to fail the action when posting or deleting comments fails.            | No       | `false`               |
 | `upload-artifacts`      | Whether to upload the head and diff PDFs as workflow artifacts.                | No       | `true`                |
 | `github-token`          | Token used to authenticate with GitHub.                                        | No       | `${{ github.token }}` |
 

@@ -35,7 +35,7 @@ inputs:
     required: false
     default: replace
   fail-on-comment-error:
-    description: 'Whether to fail the action when posting the comment fails.'
+    description: 'Whether to fail the action when posting or deleting comments fails.'
     required: false
     default: false
   upload-artifacts:
