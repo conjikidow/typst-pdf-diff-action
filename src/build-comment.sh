@@ -1,7 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-comment_file='build/meta/pr-comment.md'
 marker='<!-- typst-pdf-diff-review -->'
 has_missing='false'
 missing_count=0
@@ -9,7 +8,7 @@ diff_count=0
 no_diff_count=0
 
 revision_note=''
-if [ -n "${SUPPLIED_HEAD_DIR}" ]; then
+if [ -n "${HEAD_DIR}" ]; then
   revision_note=' (caller-supplied working tree)'
 fi
 
@@ -28,8 +27,8 @@ done <"${RESULT_TSV}"
   echo "${marker}"
   echo '## Typst PDF Diff Review'
   echo
-  echo "- Base revision: \`${BASE_REVISION}\`${revision_note}"
-  echo "- Head revision: \`${HEAD_REVISION}\`${revision_note}"
+  echo "- Base revision: \`${DISPLAY_BASE_REVISION}\`${revision_note}"
+  echo "- Head revision: \`${DISPLAY_HEAD_REVISION}\`${revision_note}"
   if [ -n "${HEAD_ARTIFACT_URL}" ]; then
     echo "- Head PDFs artifact: [typst-head-pdfs](${HEAD_ARTIFACT_URL})"
   fi
@@ -62,4 +61,4 @@ done <"${RESULT_TSV}"
     esac
     printf "| \`%s\` | %s |\n" "${file}" "${status_text}"
   done <"${RESULT_TSV}"
-} >"${comment_file}"
+} >"${COMMENT_FILE}"

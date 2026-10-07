@@ -123,7 +123,7 @@ runs:
       shell: bash
       env:
         PR_NUMBER: ${{ github.event.pull_request.number }}
-        HEAD_REVISION: ${{ steps.display-revisions.outputs.head-revision }}
+        DISPLAY_HEAD_REVISION: ${{ steps.display-revisions.outputs.head-revision }}
       run: bash "${GITHUB_ACTION_PATH}/src/determine-artifact-names.sh"
 
     - name: Check out the head revision
@@ -178,8 +178,8 @@ runs:
       shell: bash
       env:
         TARGET_FILES: ${{ inputs.target-files }}
-        BASE_DIR: build/base
-        HEAD_DIR: build/head
+        BASE_PDF_DIR: build/base
+        HEAD_PDF_DIR: build/head
         DIFF_DIR: build/diff
         META_DIR: build/meta
       run: bash "${GITHUB_ACTION_PATH}/src/generate-diff.sh"
@@ -208,12 +208,13 @@ runs:
       if: inputs.post-comment == 'true'
       shell: bash
       env:
-        SUPPLIED_HEAD_DIR: ${{ inputs.head-dir }}
-        HEAD_REVISION: ${{ steps.display-revisions.outputs.head-revision }}
-        BASE_REVISION: ${{ steps.display-revisions.outputs.base-revision }}
+        HEAD_DIR: ${{ inputs.head-dir }}
+        DISPLAY_HEAD_REVISION: ${{ steps.display-revisions.outputs.head-revision }}
+        DISPLAY_BASE_REVISION: ${{ steps.display-revisions.outputs.base-revision }}
         RESULT_TSV: ${{ steps.generate-diff.outputs.result-tsv }}
         HEAD_ARTIFACT_URL: ${{ steps.upload-head-pdfs.outputs.artifact-url }}
         DIFF_ARTIFACT_URL: ${{ steps.upload-diff-pdfs.outputs.artifact-url }}
+        COMMENT_FILE: build/meta/pr-comment.md
       run: bash "${GITHUB_ACTION_PATH}/src/build-comment.sh"
 
     - name: Post pull request comment

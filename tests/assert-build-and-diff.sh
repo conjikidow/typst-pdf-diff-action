@@ -27,7 +27,7 @@ run_case() {
   TARGET_FILES='sample.typ' SOURCE_DIR="${tests_dir}/fixtures/${head_fixture}" OUTPUT_DIR="${build}/head" \
     bash "${src_dir}/build-pdfs.sh"
 
-  TARGET_FILES='sample.typ' BASE_DIR="${build}/base" HEAD_DIR="${build}/head" \
+  TARGET_FILES='sample.typ' BASE_PDF_DIR="${build}/base" HEAD_PDF_DIR="${build}/head" \
     DIFF_DIR="${build}/diff" META_DIR="${build}/meta" GITHUB_OUTPUT="${outputs}" \
     bash "${src_dir}/generate-diff.sh"
 

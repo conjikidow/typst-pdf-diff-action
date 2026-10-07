@@ -9,7 +9,7 @@ repo_name="${GITHUB_REPOSITORY#*/}"
 if [ "${GITHUB_EVENT_NAME}" = 'pull_request' ] && [ -n "${PR_NUMBER}" ]; then
   suffix="pr-${PR_NUMBER}"
 else
-  head_revision_short="${HEAD_REVISION:0:7}"
+  head_revision_short="${DISPLAY_HEAD_REVISION:0:7}"
   suffix="${head_revision_short}"
 fi
 

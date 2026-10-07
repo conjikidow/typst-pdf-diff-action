@@ -20,19 +20,12 @@ run_case() {
   local supplied_head_dir="$2"
   local note="$3"
 
-  # build-comment.sh writes to a fixed path relative to the working directory.
-  local case_dir="${work_dir}/${name}"
-  mkdir -p "${case_dir}/build/meta"
-
-  (
-    cd "${case_dir}"
-    RESULT_TSV="${result_tsv}" HAS_DIFF='true' HEAD_REVISION='aaa111' BASE_REVISION='bbb222' \
-      HEAD_ARTIFACT_URL='' DIFF_ARTIFACT_URL='' SUPPLIED_HEAD_DIR="${supplied_head_dir}" \
-      bash "${src_dir}/build-comment.sh"
-  )
-
-  local body="${case_dir}/build/meta/pr-comment.md"
+  local body="${work_dir}/${name}.md"
   local line
+
+  RESULT_TSV="${result_tsv}" DISPLAY_HEAD_REVISION='aaa111' DISPLAY_BASE_REVISION='bbb222' \
+    HEAD_ARTIFACT_URL='' DIFF_ARTIFACT_URL='' HEAD_DIR="${supplied_head_dir}" COMMENT_FILE="${body}" \
+    bash "${src_dir}/build-comment.sh"
 
   for line in "- Base revision: \`bbb222\`${note}" "- Head revision: \`aaa111\`${note}"; do
     if ! grep -qxF -- "${line}" "${body}"; then
