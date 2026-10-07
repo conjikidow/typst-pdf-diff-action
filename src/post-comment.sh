@@ -5,7 +5,7 @@ set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
 if [ "${GITHUB_EVENT_NAME}" != 'pull_request' ] || [ -z "${PR_NUMBER}" ]; then
-  log_warn 'Skipping pull request comment update because this is not a pull_request event.'
+  log_warn 'Skipping the pull request comment because this is not a pull_request event.'
   exit 0
 fi
 
@@ -13,7 +13,7 @@ require_cmd gh
 require_cmd jq
 
 if [ ! -f "${COMMENT_FILE}" ]; then
-  log_warn "Skipping pull request comment update because ${COMMENT_FILE} was not generated."
+  log_warn "Skipping the pull request comment because ${COMMENT_FILE} was not generated."
   exit 0
 fi
 
@@ -52,8 +52,8 @@ if run_comment_call; then
 fi
 
 if [ "$(normalize_bool "${FAIL_ON_COMMENT_ERROR}")" = 'true' ]; then
-  log_error 'Failed to update the pull request comment.'
+  log_error 'Failed to post the pull request comment.'
   exit 1
 fi
 
-log_warn 'Failed to update the pull request comment.'
+log_warn 'Failed to post the pull request comment.'
