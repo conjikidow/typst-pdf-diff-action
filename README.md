@@ -108,7 +108,7 @@ jobs:
 > A GitHub App installation token is scoped to a single account,
 > so it cannot read submodules owned by another user or organization.
 > `actions/checkout` fails the whole job when any submodule cannot be fetched.
-> If your submodules span several owners, prepare the working trees yourself as described in
+> If your repository and its submodules span several owners, prepare the working trees yourself as described in
 > [Bring Your Own Working Trees](#bring-your-own-working-trees).
 
 For non-PR events, set `head-revision` and `base-revision` explicitly if you do not want
@@ -178,7 +178,7 @@ Any other combination fails immediately.
 ### Bring Your Own Working Trees
 
 Set `head-dir` and `base-dir` when the action cannot check out the sources itself,
-for example when your submodules live under more than one owner and therefore need separate tokens.
+for example when your repository and its submodules live under more than one owner and therefore need separate tokens.
 The action then builds and compares the directories you provide, and checks out nothing.
 
 Resolving the base revision is then up to you.
