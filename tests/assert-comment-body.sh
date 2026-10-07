@@ -23,7 +23,7 @@ run_case() {
   local body="${work_dir}/${name}.md"
   local line
 
-  RESULT_TSV="${result_tsv}" HAS_DIFF='true' DISPLAY_HEAD_REVISION='aaa111' DISPLAY_BASE_REVISION='bbb222' \
+  RESULT_TSV="${result_tsv}" DISPLAY_HEAD_REVISION='aaa111' DISPLAY_BASE_REVISION='bbb222' \
     HEAD_ARTIFACT_URL='' DIFF_ARTIFACT_URL='' HEAD_DIR="${supplied_head_dir}" COMMENT_FILE="${body}" \
     bash "${src_dir}/build-comment.sh"
 
