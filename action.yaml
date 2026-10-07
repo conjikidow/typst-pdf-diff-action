@@ -84,8 +84,8 @@ runs:
       shell: bash
       env:
         SUBMODULES: ${{ inputs.submodules }}
-        HEAD_REF: ${{ inputs.head-ref }}
-        BASE_REF: ${{ inputs.base-ref }}
+        HEAD_REVISION: ${{ inputs.head-ref }}
+        BASE_REVISION: ${{ inputs.base-ref }}
         HEAD_DIR: ${{ inputs.head-dir }}
         BASE_DIR: ${{ inputs.base-dir }}
       run: bash "${GITHUB_ACTION_PATH}/src/validate-inputs.sh"
@@ -100,9 +100,9 @@ runs:
         PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
         PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         PUSH_BEFORE_SHA: ${{ github.event.before }}
-        HEAD_REF_INPUT: ${{ inputs.head-ref }}
-        BASE_REF_INPUT: ${{ inputs.base-ref }}
-      run: bash "${GITHUB_ACTION_PATH}/src/resolve-refs.sh"
+        HEAD_REVISION: ${{ inputs.head-ref }}
+        BASE_REVISION: ${{ inputs.base-ref }}
+      run: bash "${GITHUB_ACTION_PATH}/src/resolve-revisions.sh"
 
     - name: Determine display revisions
       id: display-revisions
@@ -110,16 +110,16 @@ runs:
       env:
         HEAD_DIR: ${{ inputs.head-dir }}
         BASE_DIR: ${{ inputs.base-dir }}
-        RESOLVED_HEAD_REF: ${{ steps.resolve-revisions.outputs.head-ref }}
-        RESOLVED_BASE_REF: ${{ steps.resolve-revisions.outputs.base-ref }}
-      run: bash "${GITHUB_ACTION_PATH}/src/determine-display-refs.sh"
+        RESOLVED_HEAD_REVISION: ${{ steps.resolve-revisions.outputs.head-revision }}
+        RESOLVED_BASE_REVISION: ${{ steps.resolve-revisions.outputs.base-revision }}
+      run: bash "${GITHUB_ACTION_PATH}/src/determine-display-revisions.sh"
 
     - name: Determine artifact names
       id: determine-artifact-names
       shell: bash
       env:
         PR_NUMBER: ${{ github.event.pull_request.number }}
-        HEAD_REF: ${{ steps.display-revisions.outputs.head-ref }}
+        HEAD_REVISION: ${{ steps.display-revisions.outputs.head-revision }}
       run: bash "${GITHUB_ACTION_PATH}/src/determine-artifact-names.sh"
 
     - name: Check out the head revision
@@ -127,7 +127,7 @@ runs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         path: head-src
-        ref: ${{ steps.resolve-revisions.outputs.head-ref }}
+        ref: ${{ steps.resolve-revisions.outputs.head-revision }}
         submodules: ${{ inputs.submodules }}
         token: ${{ inputs.github-token }}
         fetch-depth: 1
@@ -138,7 +138,7 @@ runs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         path: base-src
-        ref: ${{ steps.resolve-revisions.outputs.base-ref }}
+        ref: ${{ steps.resolve-revisions.outputs.base-revision }}
         submodules: ${{ inputs.submodules }}
         token: ${{ inputs.github-token }}
         fetch-depth: 1
@@ -205,8 +205,8 @@ runs:
       shell: bash
       env:
         SUPPLIED_HEAD_DIR: ${{ inputs.head-dir }}
-        HEAD_REF: ${{ steps.display-revisions.outputs.head-ref }}
-        BASE_REF: ${{ steps.display-revisions.outputs.base-ref }}
+        HEAD_REVISION: ${{ steps.display-revisions.outputs.head-revision }}
+        BASE_REVISION: ${{ steps.display-revisions.outputs.base-revision }}
         RESULT_TSV: ${{ steps.generate-diff.outputs.result-tsv }}
         HEAD_ARTIFACT_URL: ${{ steps.upload-head-pdfs.outputs.artifact-url }}
         DIFF_ARTIFACT_URL: ${{ steps.upload-diff-pdfs.outputs.artifact-url }}
