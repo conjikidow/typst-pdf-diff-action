@@ -1,7 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-comment_file='build/meta/pr-comment.md'
 marker='<!-- typst-pdf-diff-review -->'
 has_missing='false'
 missing_count=0
@@ -62,4 +61,4 @@ done <"${RESULT_TSV}"
     esac
     printf "| \`%s\` | %s |\n" "${file}" "${status_text}"
   done <"${RESULT_TSV}"
-} >"${comment_file}"
+} >"${COMMENT_FILE}"

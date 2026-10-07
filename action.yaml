@@ -214,6 +214,7 @@ runs:
         RESULT_TSV: ${{ steps.generate-diff.outputs.result-tsv }}
         HEAD_ARTIFACT_URL: ${{ steps.upload-head-pdfs.outputs.artifact-url }}
         DIFF_ARTIFACT_URL: ${{ steps.upload-diff-pdfs.outputs.artifact-url }}
+        COMMENT_FILE: build/meta/pr-comment.md
       run: bash "${GITHUB_ACTION_PATH}/src/build-comment.sh"
 
     - name: Post pull request comment
