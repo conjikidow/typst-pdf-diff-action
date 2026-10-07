@@ -61,7 +61,7 @@ as [GitHub recommends](https://docs.github.com/en/actions/reference/security/sec
 Releases of this action are immutable, so its own tags are already locked to a single commit.
 
 If your Typst project uses submodules, set `submodules: recursive` and pass a
-token that can access those submodules.
+token that can access your repository and those submodules.
 
 ```yaml
 name: Generate Typst PDF diff
@@ -108,7 +108,7 @@ jobs:
 > A GitHub App installation token is scoped to a single account,
 > so it cannot read submodules owned by another user or organization.
 > `actions/checkout` fails the whole job when any submodule cannot be fetched.
-> If your submodules span several owners, prepare the working trees yourself as described in
+> If your repository and its submodules span several owners, prepare the working trees yourself as described in
 > [Bring Your Own Working Trees](#bring-your-own-working-trees).
 
 For non-PR events, set `head-revision` and `base-revision` explicitly if you do not want
@@ -178,7 +178,7 @@ Any other combination fails immediately.
 ### Bring Your Own Working Trees
 
 Set `head-dir` and `base-dir` when the action cannot check out the sources itself,
-for example when your submodules live under more than one owner and therefore need separate tokens.
+for example when your repository and its submodules live under more than one owner and therefore need separate tokens.
 The action then builds and compares the directories you provide, and checks out nothing.
 
 Resolving the base revision is then up to you.
@@ -186,12 +186,30 @@ For a PR, compare against the merge-base rather than the base branch tip,
 or the diff will also contain unrelated changes merged into the base branch in the meantime.
 
 ```yaml
+name: Generate Typst PDF diff
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  generate-typst-pdf-diff:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
       - name: Generate GitHub App token
         id: app-token
         uses: actions/create-github-app-token@v3
         with:
           client-id: ${{ vars.GH_APP_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          owner: submodule-owner
           repositories: private-submodule
           permission-contents: read
 
@@ -237,7 +255,7 @@ or the diff will also contain unrelated changes merged into the base branch in t
           base-dir: base-src
 ```
 
-That example uses a single token.
+That example uses a single token for its submodules.
 When your submodules span several owners, qualify each rewrite with the owner so that the longest match wins.
 Identical prefixes resolve to whichever token was configured first,
 which silently sends one owner's token to another owner.
