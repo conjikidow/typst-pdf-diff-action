@@ -18,7 +18,7 @@ A GitHub Action to generate PDF diffs for Typst documents.
 - Builds Typst documents from separate base and head revisions.
 - Generates diff PDFs with [`diff-pdf`](https://github.com/vslavik/diff-pdf).
 - Uploads head PDFs and diff PDFs as workflow artifacts.
-- Optionally creates or updates a pull request (PR) comment.
+- Optionally posts a pull request (PR) comment.
 
 ## Usage
 
@@ -29,7 +29,7 @@ which the GitHub-hosted Ubuntu runner images provide.
 
 The following workflow runs on PRs, compares the PR head against
 the merge-base (the commit where the PR branched off the base branch),
-uploads the generated PDFs, and updates a PR comment.
+uploads the generated PDFs, and posts a PR comment.
 
 ```yaml
 name: Generate Typst PDF diff
@@ -122,7 +122,7 @@ so what it needs depends on which of them run.
 | Scope                  | Needed for                                                                                        |
 | ---------------------- | ------------------------------------------------------------------------------------------------- |
 | `contents: read`       | Resolving the revisions and checking them out. Not needed when `head-dir` and `base-dir` are set. |
-| `pull-requests: write` | Updating the PR comment. Not needed when `post-comment` is `false`.                               |
+| `pull-requests: write` | Posting the PR comment and deleting earlier ones. Not needed when `post-comment` is `false`.      |
 
 The default `${{ github.token }}` carries whatever the workflow grants it,
 so grant those scopes in the job, as the first example above does.
@@ -141,9 +141,9 @@ which is why that example zeroes it with `permissions: {}`.
 | `submodules`            | Submodule mode passed to `actions/checkout`: `false`, `true`, or `recursive`.  | No       | `false`               |
 | `head-ref`              | Head revision to compare. Defaults to the PR head SHA or `github.sha`.         | No       | `''`                  |
 | `base-ref`              | Base revision to compare. Defaults to the merge-base or `github.event.before`. | No       | `''`                  |
-| `post-comment`          | Whether to update a PR comment with the diff results.                          | No       | `true`                |
-| `comment-mode`          | Comment update mode: `replace` or `append`.                                    | No       | `replace`             |
-| `fail-on-comment-error` | Whether to fail the action when the comment update fails.                      | No       | `false`               |
+| `post-comment`          | Whether to post a PR comment with the diff results.                            | No       | `true`                |
+| `comment-mode`          | Handling of earlier comments: `replace` deletes them, `append` keeps them.     | No       | `replace`             |
+| `fail-on-comment-error` | Whether to fail the action when posting or deleting comments fails.            | No       | `false`               |
 | `upload-artifacts`      | Whether to upload the head and diff PDFs as workflow artifacts.                | No       | `true`                |
 | `github-token`          | Token used to authenticate with GitHub.                                        | No       | `${{ github.token }}` |
 
@@ -151,7 +151,7 @@ which is why that example zeroes it with `permissions: {}`.
 
 > [!NOTE]
 > `post-comment: true` is intended for `pull_request` events.
-> On other events, the action skips PR comment updates.
+> On other events, the action skips the PR comment.
 
 #### Advanced Inputs
 
@@ -263,7 +263,7 @@ so do not point `head-dir` or `base-dir` inside that directory.
 3. Builds PDFs for all `target-files` from both revisions.
 4. Generates diff PDFs with `diff-pdf`.
 5. Uploads head PDFs and diff PDFs as artifacts when enabled.
-6. Builds a Markdown summary and optionally updates a PR comment.
+6. Builds a Markdown summary and optionally posts a PR comment.
 
 ## License
 

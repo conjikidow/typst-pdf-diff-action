@@ -27,15 +27,15 @@ inputs:
     required: false
     default: ''
   post-comment:
-    description: 'Whether to update a PR comment with the diff results.'
+    description: 'Whether to post a PR comment with the diff results.'
     required: false
     default: true
   comment-mode:
-    description: 'Comment update mode: `replace` or `append`.'
+    description: 'Handling of earlier comments: `replace` deletes them, `append` keeps them.'
     required: false
     default: replace
   fail-on-comment-error:
-    description: 'Whether to fail the action when the comment update fails.'
+    description: 'Whether to fail the action when posting or deleting comments fails.'
     required: false
     default: false
   upload-artifacts:
@@ -212,7 +212,7 @@ runs:
         DIFF_ARTIFACT_URL: ${{ steps.upload-diff-pdfs.outputs.artifact-url }}
       run: bash "${GITHUB_ACTION_PATH}/src/build-comment.sh"
 
-    - name: Update pull request comment
+    - name: Post pull request comment
       if: inputs.post-comment == 'true'
       shell: bash
       env:
