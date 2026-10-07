@@ -4,27 +4,27 @@ set -euo pipefail
 # shellcheck disable=SC1091
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
-determine_ref() {
+determine_revision() {
   local resolved="$1"
   local dir="$2"
   local role="$3"
 
   if [ -n "${resolved}" ]; then
-    ref="${resolved}"
+    revision="${resolved}"
     return
   fi
 
   # Without this guard, rev-parse would walk up and report a parent repository.
-  if [ -e "${dir}/.git" ] && ref="$(git -C "${dir}" rev-parse HEAD 2>/dev/null)"; then
+  if [ -e "${dir}/.git" ] && revision="$(git -C "${dir}" rev-parse HEAD 2>/dev/null)"; then
     return
   fi
 
   log_warn "Unable to determine the ${role} revision from '${dir}'; labeling it as '${role}'."
-  ref="${role}"
+  revision="${role}"
 }
 
-determine_ref "${RESOLVED_HEAD_REF}" "${HEAD_DIR}" 'head'
-write_output 'head-ref' "${ref}"
+determine_revision "${RESOLVED_HEAD_REVISION}" "${HEAD_DIR}" 'head'
+write_output 'head-revision' "${revision}"
 
-determine_ref "${RESOLVED_BASE_REF}" "${BASE_DIR}" 'base'
-write_output 'base-ref' "${ref}"
+determine_revision "${RESOLVED_BASE_REVISION}" "${BASE_DIR}" 'base'
+write_output 'base-revision' "${revision}"

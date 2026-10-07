@@ -30,7 +30,7 @@ if [ "${SUBMODULES}" != 'false' ]; then
   exit 1
 fi
 
-if [ -n "${HEAD_REF}" ] || [ -n "${BASE_REF}" ]; then
-  log_error 'head-ref and base-ref have no effect when head-dir and base-dir are set, because the compared revisions are read from those directories.'
+if [ -n "${HEAD_REVISION}" ] || [ -n "${BASE_REVISION}" ]; then
+  log_error 'head-revision and base-revision have no effect when head-dir and base-dir are set, because the compared revisions are read from those directories.'
   exit 1
 fi

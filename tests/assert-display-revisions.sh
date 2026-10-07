@@ -36,21 +36,21 @@ run_case() {
   local outputs="${work_dir}/outputs"
   : >"${outputs}"
 
-  RESOLVED_HEAD_REF="${resolved_head}" RESOLVED_BASE_REF="${resolved_base}" \
+  RESOLVED_HEAD_REVISION="${resolved_head}" RESOLVED_BASE_REVISION="${resolved_base}" \
     HEAD_DIR="${head_dir}" BASE_DIR="${base_dir}" GITHUB_OUTPUT="${outputs}" \
-    bash "${src_dir}/determine-display-refs.sh" >/dev/null 2>&1
+    bash "${src_dir}/determine-display-revisions.sh" >/dev/null 2>&1
 
-  local head_ref base_ref
-  head_ref="$(sed -n 's/^head-ref=//p' "${outputs}")"
-  base_ref="$(sed -n 's/^base-ref=//p' "${outputs}")"
+  local head_revision base_revision
+  head_revision="$(sed -n 's/^head-revision=//p' "${outputs}")"
+  base_revision="$(sed -n 's/^base-revision=//p' "${outputs}")"
 
-  if [ "${head_ref}" != "${expected_head}" ]; then
-    log_error "${name}: expected head-ref '${expected_head}', got '${head_ref}'."
+  if [ "${head_revision}" != "${expected_head}" ]; then
+    log_error "${name}: expected head-revision '${expected_head}', got '${head_revision}'."
     status=1
   fi
 
-  if [ "${base_ref}" != "${expected_base}" ]; then
-    log_error "${name}: expected base-ref '${expected_base}', got '${base_ref}'."
+  if [ "${base_revision}" != "${expected_base}" ]; then
+    log_error "${name}: expected base-revision '${expected_base}', got '${base_revision}'."
     status=1
   fi
 }

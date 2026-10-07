@@ -31,8 +31,8 @@ jobs:
     permissions:
       contents: read
     env:
-      BASE_REV: 'v0.1.0'
-      HEAD_REV: 'v0.2.0'
+      BASE_REVISION: 'v0.1.0'
+      HEAD_REVISION: 'v0.2.0'
 
     steps:
       - name: Check out the repository
@@ -46,8 +46,8 @@ jobs:
         uses: $/
         with:
           target-files: missing.typ
-          base-ref: ${{ env.BASE_REV }}
-          head-ref: ${{ env.HEAD_REV }}
+          base-revision: ${{ env.BASE_REVISION }}
+          head-revision: ${{ env.HEAD_REVISION }}
           post-comment: false
           upload-artifacts: false
 
@@ -174,7 +174,7 @@ jobs:
           persist-credentials: false
 
       - name: Assert that display revisions are determined from the working trees
-        run: bash tests/assert-display-refs.sh
+        run: bash tests/assert-display-revisions.sh
 
   test-build-and-diff:
     name: Test build and diff
