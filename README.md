@@ -134,18 +134,18 @@ which is why that example zeroes it with `permissions: {}`.
 
 ### Inputs
 
-| Name                    | Description                                                                                                               | Required | Default               |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------- | -------- | --------------------- |
-| `target-files`          | Space-separated Typst entrypoint files to compile.                                                                        | Yes      | -                     |
-| `typst-version`         | Version of Typst to use.                                                                                                  | No       | `'latest'`            |
-| `submodules`            | Submodule mode passed to `actions/checkout`: `false`, `true`, or `recursive`.                                             | No       | `false`               |
-| `head-revision`         | Head revision to compare, as a branch, tag, or commit SHA. Defaults to the PR head SHA or `github.sha`.                   | No       | `''`                  |
-| `base-revision`         | Base revision to compare, as a branch, tag, or commit SHA. Defaults to the merge-base of the PR or `github.event.before`. | No       | `''`                  |
-| `post-comment`          | Whether to post a PR comment with the diff results.                                                                       | No       | `true`                |
-| `comment-mode`          | Handling of earlier comments: `replace` deletes them, `append` keeps them.                                                | No       | `replace`             |
-| `fail-on-comment-error` | Whether to fail the action when posting or deleting comments fails.                                                       | No       | `false`               |
-| `upload-artifacts`      | Whether to upload the head and diff PDFs as workflow artifacts.                                                           | No       | `true`                |
-| `github-token`          | Token used to authenticate with GitHub.                                                                                   | No       | `${{ github.token }}` |
+| Name                    | Description                                                                                                                 | Required | Default               |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------- | -------- | --------------------- |
+| `target-files`          | Space-separated Typst entrypoint files to compile.                                                                          | Yes      | -                     |
+| `typst-version`         | Version of Typst to use.                                                                                                    | No       | `'latest'`            |
+| `submodules`            | Submodule mode passed to `actions/checkout`: `false`, `true`, or `recursive`.                                               | No       | `false`               |
+| `head-revision`         | Head revision to compare, as a branch, tag, or commit SHA. Defaults to the PR head SHA or `github.sha`.                     | No       | `''`                  |
+| `base-revision`         | Base revision to compare, as a branch, tag, or commit SHA. Defaults to the merge-base of the PR or `github.event.before`.   | No       | `''`                  |
+| `post-comment`          | Whether to post a PR comment with the diff results.                                                                         | No       | `true`                |
+| `comment-mode`          | Handling of earlier comments: `replace` deletes them, `append` keeps them.                                                  | No       | `replace`             |
+| `fail-on-comment-error` | Whether to fail the action when posting or deleting comments fails.                                                         | No       | `false`               |
+| `upload-artifacts`      | Whether to upload the head and diff PDFs as workflow artifacts.                                                             | No       | `true`                |
+| `github-token`          | Token used to authenticate with GitHub. Needs `contents: read` for the checkout and `pull-requests: write` for the comment. | No       | `${{ github.token }}` |
 
 `target-files` is interpreted as a space-separated list, for example `main.typ appendix.typ`.
 
