@@ -205,21 +205,21 @@ or the diff will also contain unrelated changes merged into the base branch in t
           sha=$(gh api "repos/${GITHUB_REPOSITORY}/compare/${PR_BASE_SHA}...${PR_HEAD_SHA}" --jq '.merge_base_commit.sha')
           echo "sha=${sha}" >> "${GITHUB_OUTPUT}"
 
-      - name: Checkout the head revision
+      - name: Check out the head revision
         uses: actions/checkout@v7
         with:
           path: head-src
           ref: ${{ github.event.pull_request.head.sha }}
           persist-credentials: false
 
-      - name: Checkout the base revision
+      - name: Check out the base revision
         uses: actions/checkout@v7
         with:
           path: base-src
           ref: ${{ steps.merge-base.outputs.sha }}
           persist-credentials: false
 
-      - name: Checkout the required submodules
+      - name: Check out the required submodules
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
