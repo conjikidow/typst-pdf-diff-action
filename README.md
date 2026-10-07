@@ -186,6 +186,23 @@ For a PR, compare against the merge-base rather than the base branch tip,
 or the diff will also contain unrelated changes merged into the base branch in the meantime.
 
 ```yaml
+name: Generate Typst PDF diff
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  generate-typst-pdf-diff:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
       - name: Generate GitHub App token
         id: app-token
         uses: actions/create-github-app-token@v3
