@@ -122,7 +122,7 @@ runs:
         HEAD_REF: ${{ steps.display-revisions.outputs.head-ref }}
       run: bash "${GITHUB_ACTION_PATH}/src/determine-artifact-names.sh"
 
-    - name: Checkout the head revision
+    - name: Check out the head revision
       if: inputs.head-dir == ''
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
@@ -133,7 +133,7 @@ runs:
         fetch-depth: 1
         persist-credentials: false
 
-    - name: Checkout the base revision
+    - name: Check out the base revision
       if: inputs.head-dir == ''
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
