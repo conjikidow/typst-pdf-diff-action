@@ -61,7 +61,7 @@ as [GitHub recommends](https://docs.github.com/en/actions/reference/security/sec
 Releases of this action are immutable, so its own tags are already locked to a single commit.
 
 If your Typst project uses submodules, set `submodules: recursive` and pass a
-token that can access those submodules.
+token that can access your repository and those submodules.
 
 ```yaml
 name: Generate Typst PDF diff
@@ -209,6 +209,7 @@ jobs:
         with:
           client-id: ${{ vars.GH_APP_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          owner: submodule-owner
           repositories: private-submodule
           permission-contents: read
 
@@ -254,7 +255,7 @@ jobs:
           base-dir: base-src
 ```
 
-That example uses a single token.
+That example uses a single token for its submodules.
 When your submodules span several owners, qualify each rewrite with the owner so that the longest match wins.
 Identical prefixes resolve to whichever token was configured first,
 which silently sends one owner's token to another owner.
