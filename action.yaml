@@ -205,6 +205,7 @@ runs:
         if-no-files-found: error
 
     - name: Build pull request comment body
+      id: comment-body
       if: inputs.post-comment == 'true'
       shell: bash
       env:
@@ -226,5 +227,5 @@ runs:
         PR_NUMBER: ${{ github.event.pull_request.number }}
         COMMENT_MODE: ${{ inputs.comment-mode }}
         FAIL_ON_COMMENT_ERROR: ${{ inputs.fail-on-comment-error }}
-        COMMENT_FILE: build/meta/pr-comment.md
+        COMMENT_FILE: ${{ steps.comment-body.outputs.comment-file }}
       run: bash "${GITHUB_ACTION_PATH}/src/post-comment.sh"

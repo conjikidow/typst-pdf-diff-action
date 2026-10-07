@@ -21,11 +21,17 @@ run_case() {
   local note="$3"
 
   local body="${work_dir}/${name}.md"
+  local outputs="${work_dir}/${name}.out"
   local line
 
   RESULT_TSV="${result_tsv}" DISPLAY_HEAD_REVISION='aaa111' DISPLAY_BASE_REVISION='bbb222' \
     HEAD_ARTIFACT_URL='' DIFF_ARTIFACT_URL='' HEAD_DIR="${supplied_head_dir}" COMMENT_FILE="${body}" \
-    bash "${src_dir}/build-comment.sh"
+    GITHUB_OUTPUT="${outputs}" bash "${src_dir}/build-comment.sh"
+
+  if ! grep -qxF -- "comment-file=${body}" "${outputs}"; then
+    log_error "${name}: expected the comment-file output to be '${body}'."
+    status=1
+  fi
 
   for line in "- Base revision: \`bbb222\`${note}" "- Head revision: \`aaa111\`${note}"; do
     if ! grep -qxF -- "${line}" "${body}"; then
