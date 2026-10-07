@@ -28,8 +28,8 @@ done <"${RESULT_TSV}"
   echo "${marker}"
   echo '## Typst PDF Diff Review'
   echo
-  echo "- Base revision: \`${BASE_REVISION}\`${revision_note}"
-  echo "- Head revision: \`${HEAD_REVISION}\`${revision_note}"
+  echo "- Base revision: \`${DISPLAY_BASE_REVISION}\`${revision_note}"
+  echo "- Head revision: \`${DISPLAY_HEAD_REVISION}\`${revision_note}"
   if [ -n "${HEAD_ARTIFACT_URL}" ]; then
     echo "- Head PDFs artifact: [typst-head-pdfs](${HEAD_ARTIFACT_URL})"
   fi

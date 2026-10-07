@@ -26,7 +26,7 @@ run_case() {
 
   (
     cd "${case_dir}"
-    RESULT_TSV="${result_tsv}" HAS_DIFF='true' HEAD_REVISION='aaa111' BASE_REVISION='bbb222' \
+    RESULT_TSV="${result_tsv}" HAS_DIFF='true' DISPLAY_HEAD_REVISION='aaa111' DISPLAY_BASE_REVISION='bbb222' \
       HEAD_ARTIFACT_URL='' DIFF_ARTIFACT_URL='' HEAD_DIR="${supplied_head_dir}" \
       bash "${src_dir}/build-comment.sh"
   )
