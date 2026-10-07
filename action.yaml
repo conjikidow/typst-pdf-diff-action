@@ -44,8 +44,8 @@ inputs:
     default: true
   github-token:
     description: >-
-      Token used to authenticate with GitHub. Needs `contents: read` for the
-      checkout and `pull-requests: write` for the comment.
+      Token used to authenticate with GitHub.
+      Needs `contents: read` for the checkout and `pull-requests: write` for the comment.
     required: false
     default: ${{ github.token }}
   head-dir:
