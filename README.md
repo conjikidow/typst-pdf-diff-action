@@ -50,7 +50,7 @@ jobs:
 
     steps:
       - name: Generate Typst PDF diff
-        uses: conjikidow/typst-pdf-diff-action@v0.3.2
+        uses: conjikidow/typst-pdf-diff-action@v0.4.0
         with:
           target-files: main.typ
 ```
@@ -95,7 +95,7 @@ jobs:
           permission-pull-requests: write
 
       - name: Generate Typst PDF diff
-        uses: conjikidow/typst-pdf-diff-action@v0.3.2
+        uses: conjikidow/typst-pdf-diff-action@v0.4.0
         with:
           target-files: ${{ env.TYPST_TARGET_FILES }}
           github-token: ${{ steps.app-token.outputs.token }}
@@ -230,7 +230,7 @@ or the diff will also contain unrelated changes merged into the base branch in t
           done
 
       - name: Generate Typst PDF diff
-        uses: conjikidow/typst-pdf-diff-action@v0.3.2
+        uses: conjikidow/typst-pdf-diff-action@v0.4.0
         with:
           target-files: paper/main.typ
           head-dir: head-src
