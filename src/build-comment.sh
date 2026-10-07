@@ -1,6 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
+# shellcheck disable=SC1091
+source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
+
 marker='<!-- typst-pdf-diff-review -->'
 has_missing='false'
 missing_count=0
@@ -62,3 +65,5 @@ done <"${RESULT_TSV}"
     printf "| \`%s\` | %s |\n" "${file}" "${status_text}"
   done <"${RESULT_TSV}"
 } >"${COMMENT_FILE}"
+
+write_output 'comment-file' "${COMMENT_FILE}"
