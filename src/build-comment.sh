@@ -9,7 +9,7 @@ diff_count=0
 no_diff_count=0
 
 revision_note=''
-if [ -n "${SUPPLIED_HEAD_DIR}" ]; then
+if [ -n "${HEAD_DIR}" ]; then
   revision_note=' (caller-supplied working tree)'
 fi
 

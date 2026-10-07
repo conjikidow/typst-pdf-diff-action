@@ -178,8 +178,8 @@ runs:
       shell: bash
       env:
         TARGET_FILES: ${{ inputs.target-files }}
-        BASE_DIR: build/base
-        HEAD_DIR: build/head
+        BASE_PDF_DIR: build/base
+        HEAD_PDF_DIR: build/head
         DIFF_DIR: build/diff
         META_DIR: build/meta
       run: bash "${GITHUB_ACTION_PATH}/src/generate-diff.sh"
@@ -208,7 +208,7 @@ runs:
       if: inputs.post-comment == 'true'
       shell: bash
       env:
-        SUPPLIED_HEAD_DIR: ${{ inputs.head-dir }}
+        HEAD_DIR: ${{ inputs.head-dir }}
         HEAD_REVISION: ${{ steps.display-revisions.outputs.head-revision }}
         BASE_REVISION: ${{ steps.display-revisions.outputs.base-revision }}
         RESULT_TSV: ${{ steps.generate-diff.outputs.result-tsv }}

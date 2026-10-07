@@ -13,8 +13,8 @@ diff_count=0
 
 for file in ${TARGET_FILES}; do
   rel="${file%.typ}"
-  base_pdf="${BASE_DIR}/${rel}.pdf"
-  head_pdf="${HEAD_DIR}/${rel}.pdf"
+  base_pdf="${BASE_PDF_DIR}/${rel}.pdf"
+  head_pdf="${HEAD_PDF_DIR}/${rel}.pdf"
   diff_pdf="${DIFF_DIR}/${rel}.pdf"
 
   mkdir -p "$(dirname "${diff_pdf}")"
