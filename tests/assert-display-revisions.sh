@@ -1,11 +1,11 @@
 #!/bin/bash
 set -euo pipefail
 
+# shellcheck disable=SC1091
+source "$(dirname "${BASH_SOURCE[0]}")/../src/common.sh"
+
 tests_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 src_dir="${tests_dir}/../src"
-
-# shellcheck disable=SC1091
-source "${src_dir}/common.sh"
 
 work_dir="$(mktemp -d)"
 trap 'rm -rf "${work_dir}"' EXIT
