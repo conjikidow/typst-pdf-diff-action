@@ -1,7 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-# shellcheck disable=SC1091
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
 if [ "${GITHUB_EVENT_NAME}" != 'pull_request' ] || [ -z "${PR_NUMBER}" ]; then
