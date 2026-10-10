@@ -98,8 +98,8 @@ jobs:
         uses: conjikidow/typst-pdf-diff-action@v0.4.0
         with:
           target-files: ${{ env.TYPST_TARGET_FILES }}
-          github-token: ${{ steps.app-token.outputs.token }}
           submodules: recursive
+          github-token: ${{ steps.app-token.outputs.token }}
 ```
 
 > [!IMPORTANT]
@@ -226,16 +226,16 @@ jobs:
       - name: Check out the head revision
         uses: actions/checkout@v7
         with:
-          path: head-src
           ref: ${{ github.event.pull_request.head.sha }}
           persist-credentials: false
+          path: head-src
 
       - name: Check out the base revision
         uses: actions/checkout@v7
         with:
-          path: base-src
           ref: ${{ steps.merge-base.outputs.sha }}
           persist-credentials: false
+          path: base-src
 
       - name: Check out the required submodules
         env:

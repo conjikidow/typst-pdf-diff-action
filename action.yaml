@@ -130,23 +130,23 @@ runs:
       if: inputs.head-dir == ''
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
-        path: head-src
         ref: ${{ steps.resolve-revisions.outputs.head-revision }}
-        submodules: ${{ inputs.submodules }}
         token: ${{ inputs.github-token }}
-        fetch-depth: 1
         persist-credentials: false
+        path: head-src
+        fetch-depth: 1
+        submodules: ${{ inputs.submodules }}
 
     - name: Check out the base revision
       if: inputs.head-dir == ''
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
-        path: base-src
         ref: ${{ steps.resolve-revisions.outputs.base-revision }}
-        submodules: ${{ inputs.submodules }}
         token: ${{ inputs.github-token }}
-        fetch-depth: 1
         persist-credentials: false
+        path: base-src
+        fetch-depth: 1
+        submodules: ${{ inputs.submodules }}
 
     - name: Install Typst
       uses: typst-community/setup-typst@fee4b65b091cc546f02ce3be15fad8760f38a108 # v5.3.0
