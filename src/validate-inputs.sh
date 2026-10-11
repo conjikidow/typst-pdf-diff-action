@@ -3,33 +3,33 @@ set -euo pipefail
 
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
-if [ -z "${HEAD_DIR}" ] && [ -z "${BASE_DIR}" ]; then
+if [ -z "${BASE_DIR}" ] && [ -z "${HEAD_DIR}" ]; then
   exit 0
 fi
 
-if [ -z "${HEAD_DIR}" ] || [ -z "${BASE_DIR}" ]; then
-  log_error 'head-dir and base-dir must be set together, or both left empty to let the action check out the sources.'
+if [ -z "${BASE_DIR}" ] || [ -z "${HEAD_DIR}" ]; then
+  log_error 'base-dir and head-dir must be set together, or both left empty to let the action check out the sources.'
   exit 1
 fi
 
-for dir in "${HEAD_DIR}" "${BASE_DIR}"; do
+for dir in "${BASE_DIR}" "${HEAD_DIR}"; do
   if [ ! -d "${dir}" ]; then
     log_error "Working tree not found: ${dir}"
     exit 1
   fi
 done
 
-if [ "$(cd "${HEAD_DIR}" && pwd -P)" = "$(cd "${BASE_DIR}" && pwd -P)" ]; then
-  log_error 'head-dir and base-dir must point to different directories.'
+if [ "$(cd "${BASE_DIR}" && pwd -P)" = "$(cd "${HEAD_DIR}" && pwd -P)" ]; then
+  log_error 'base-dir and head-dir must point to different directories.'
   exit 1
 fi
 
 if [ "${SUBMODULES}" != 'false' ]; then
-  log_error 'submodules has no effect when head-dir and base-dir are set, because the action does not check out the sources.'
+  log_error 'submodules has no effect when base-dir and head-dir are set, because the action does not check out the sources.'
   exit 1
 fi
 
-if [ -n "${HEAD_REVISION}" ] || [ -n "${BASE_REVISION}" ]; then
-  log_error 'head-revision and base-revision have no effect when head-dir and base-dir are set, because the compared revisions are read from those directories.'
+if [ -n "${BASE_REVISION}" ] || [ -n "${HEAD_REVISION}" ]; then
+  log_error 'base-revision and head-revision have no effect when base-dir and head-dir are set, because the compared revisions are read from those directories.'
   exit 1
 fi
