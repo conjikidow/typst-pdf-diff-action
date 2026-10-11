@@ -14,7 +14,7 @@ make_repo() {
   mkdir -p "${repo}/plain"
   git -C "${repo}" init --quiet
   git -C "${repo}" -c user.email='test@example.com' -c user.name='Test' \
-    commit --quiet --allow-empty --message "$1"
+    commit --quiet --message="$1" --allow-empty
   git -C "${repo}" rev-parse HEAD
 }
 

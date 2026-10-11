@@ -24,12 +24,12 @@ run_comment_call() {
 
   if [ "${COMMENT_MODE}" = 'replace' ]; then
     if ! existing_ids="$(gh api "${list_endpoint}" --paginate \
-      --jq ".[] | select(.body | contains(\"${marker}\")) | .id")"; then
+      --jq=".[] | select(.body | contains(\"${marker}\")) | .id")"; then
       return 1
     fi
 
     for comment_id in ${existing_ids}; do
-      if ! gh api -X DELETE "repos/{owner}/{repo}/issues/comments/${comment_id}"; then
+      if ! gh api "repos/{owner}/{repo}/issues/comments/${comment_id}" --method=DELETE; then
         status=1
       fi
     done
@@ -38,8 +38,8 @@ run_comment_call() {
     exit 1
   fi
 
-  body_json="$(jq -Rs '{body: .}' "${COMMENT_FILE}")"
-  if ! gh api "${list_endpoint}" --method POST --input - <<<"${body_json}"; then
+  body_json="$(jq --raw-input --slurp '{body: .}' "${COMMENT_FILE}")"
+  if ! gh api "${list_endpoint}" --method=POST --input=- <<<"${body_json}"; then
     status=1
   fi
 

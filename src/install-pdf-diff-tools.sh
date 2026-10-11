@@ -4,7 +4,7 @@ set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
 sudo apt-get update
-sudo apt-get install -y --no-install-recommends \
+sudo apt-get --no-install-recommends --yes install \
   diff-pdf-wx \
   xvfb
 

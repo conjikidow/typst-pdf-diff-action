@@ -220,7 +220,7 @@ jobs:
           PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          sha=$(gh api "repos/${GITHUB_REPOSITORY}/compare/${PR_BASE_SHA}...${PR_HEAD_SHA}" --jq '.merge_base_commit.sha')
+          sha=$(gh api "repos/${GITHUB_REPOSITORY}/compare/${PR_BASE_SHA}...${PR_HEAD_SHA}" --jq='.merge_base_commit.sha')
           echo "sha=${sha}" >> "${GITHUB_OUTPUT}"
 
       - name: Check out the base revision
@@ -244,7 +244,7 @@ jobs:
           git config --global --add url."https://x-access-token:${GH_TOKEN}@github.com/".insteadOf git@github.com:
           git config --global --add url."https://x-access-token:${GH_TOKEN}@github.com/".insteadOf https://github.com/
           for dir in base-src head-src; do
-            git -C "${dir}" submodule update --init --depth 1 private-submodule
+            git -C "${dir}" submodule update --init --depth=1 private-submodule
           done
 
       - name: Generate Typst PDF diff
