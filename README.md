@@ -111,7 +111,7 @@ jobs:
 > If your repository and its submodules span several owners, prepare the working trees yourself as described in
 > [Bring Your Own Working Trees](#bring-your-own-working-trees).
 
-For non-PR events, set `head-revision` and `base-revision` explicitly if you do not want
+For non-PR events, set `base-revision` and `head-revision` explicitly if you do not want
 to rely on the action's automatic revision resolution.
 
 ### Permissions
@@ -121,7 +121,7 @@ so what it needs depends on which of them run.
 
 | Scope                  | Needed for                                                                                        |
 | ---------------------- | ------------------------------------------------------------------------------------------------- |
-| `contents: read`       | Resolving the revisions and checking them out. Not needed when `head-dir` and `base-dir` are set. |
+| `contents: read`       | Resolving the revisions and checking them out. Not needed when `base-dir` and `head-dir` are set. |
 | `pull-requests: write` | Posting the PR comment and deleting earlier ones. Not needed when `post-comment` is `false`.      |
 
 The default `${{ github.token }}` carries whatever the workflow grants it,
@@ -139,8 +139,8 @@ which is why that example zeroes it with `permissions: {}`.
 | `target-files`          | Space-separated Typst entrypoint files to compile.                                                                          | Yes      | -                     |
 | `typst-version`         | Version of Typst to use.                                                                                                    | No       | `'latest'`            |
 | `submodules`            | Submodule mode passed to `actions/checkout`: `false`, `true`, or `recursive`.                                               | No       | `false`               |
-| `head-revision`         | Head revision to compare, as a branch, tag, or commit SHA. Defaults to the PR head SHA or `github.sha`.                     | No       | `''`                  |
 | `base-revision`         | Base revision to compare, as a branch, tag, or commit SHA. Defaults to the merge-base of the PR or `github.event.before`.   | No       | `''`                  |
+| `head-revision`         | Head revision to compare, as a branch, tag, or commit SHA. Defaults to the PR head SHA or `github.sha`.                     | No       | `''`                  |
 | `post-comment`          | Whether to post a PR comment with the diff results.                                                                         | No       | `true`                |
 | `comment-mode`          | Handling of earlier comments: `replace` deletes them, `append` keeps them.                                                  | No       | `replace`             |
 | `fail-on-comment-error` | Whether to fail the action when posting or deleting comments fails.                                                         | No       | `false`               |
@@ -160,10 +160,10 @@ See [Bring Your Own Working Trees](#bring-your-own-working-trees).
 
 | Name       | Description                                                                 | Required | Default |
 | ---------- | --------------------------------------------------------------------------- | -------- | ------- |
-| `head-dir` | Existing working tree to build the head revision from. Requires `base-dir`. | No       | `''`    |
 | `base-dir` | Existing working tree to build the base revision from. Requires `head-dir`. | No       | `''`    |
+| `head-dir` | Existing working tree to build the head revision from. Requires `base-dir`. | No       | `''`    |
 
-Both must be set together, and `submodules`, `head-revision`, and `base-revision` must stay at their defaults,
+Both must be set together, and `submodules`, `base-revision`, and `head-revision` must stay at their defaults,
 because the action checks out nothing in this mode.
 Any other combination fails immediately.
 
@@ -177,7 +177,7 @@ Any other combination fails immediately.
 
 ### Bring Your Own Working Trees
 
-Set `head-dir` and `base-dir` when the action cannot check out the sources itself,
+Set `base-dir` and `head-dir` when the action cannot check out the sources itself,
 for example when your repository and its submodules live under more than one owner and therefore need separate tokens.
 The action then builds and compares the directories you provide, and checks out nothing.
 
@@ -223,13 +223,6 @@ jobs:
           sha=$(gh api "repos/${GITHUB_REPOSITORY}/compare/${PR_BASE_SHA}...${PR_HEAD_SHA}" --jq '.merge_base_commit.sha')
           echo "sha=${sha}" >> "${GITHUB_OUTPUT}"
 
-      - name: Check out the head revision
-        uses: actions/checkout@v7
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          persist-credentials: false
-          path: head-src
-
       - name: Check out the base revision
         uses: actions/checkout@v7
         with:
@@ -237,13 +230,20 @@ jobs:
           persist-credentials: false
           path: base-src
 
+      - name: Check out the head revision
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+          path: head-src
+
       - name: Check out the required submodules
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           git config --global --add url."https://x-access-token:${GH_TOKEN}@github.com/".insteadOf git@github.com:
           git config --global --add url."https://x-access-token:${GH_TOKEN}@github.com/".insteadOf https://github.com/
-          for dir in head-src base-src; do
+          for dir in base-src head-src; do
             git -C "${dir}" submodule update --init --depth 1 private-submodule
           done
 
@@ -251,8 +251,8 @@ jobs:
         uses: conjikidow/typst-pdf-diff-action@v0.4.0
         with:
           target-files: paper/main.typ
-          head-dir: head-src
           base-dir: base-src
+          head-dir: head-src
 ```
 
 That example uses a single token for its submodules.
@@ -268,7 +268,7 @@ git config --global --add \
 ```
 
 The action writes its build output to `build/` in the workspace,
-so do not point `head-dir` or `base-dir` inside that directory.
+so do not point `base-dir` or `head-dir` inside that directory.
 
 > [!CAUTION]
 > The action cannot verify that the directories you supply hold the revisions you intended.
@@ -276,7 +276,7 @@ so do not point `head-dir` or `base-dir` inside that directory.
 ## How It Works
 
 1. Resolves the base and head revisions, and checks them out into separate directories.
-   Both steps are skipped when `head-dir` and `base-dir` are provided.
+   Both steps are skipped when `base-dir` and `head-dir` are provided.
 2. Installs Typst and `diff-pdf`.
 3. Builds PDFs for all `target-files` from both revisions.
 4. Generates diff PDFs with `diff-pdf`.
