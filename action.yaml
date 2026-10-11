@@ -18,16 +18,16 @@ inputs:
     description: 'Submodule mode passed to `actions/checkout`: `false`, `true`, or `recursive`.'
     required: false
     default: false
-  head-revision:
-    description: >-
-      Head revision to compare, as a branch, tag, or commit SHA.
-      Defaults to the PR head SHA or `github.sha`.
-    required: false
-    default: ''
   base-revision:
     description: >-
       Base revision to compare, as a branch, tag, or commit SHA.
       Defaults to the merge-base of the PR or `github.event.before`.
+    required: false
+    default: ''
+  head-revision:
+    description: >-
+      Head revision to compare, as a branch, tag, or commit SHA.
+      Defaults to the PR head SHA or `github.sha`.
     required: false
     default: ''
   post-comment:
@@ -52,12 +52,12 @@ inputs:
       Needs `contents: read` for the checkout and `pull-requests: write` for the comment.
     required: false
     default: ${{ github.token }}
-  head-dir:
-    description: 'Existing working tree to build the head revision from. Requires `base-dir`.'
-    required: false
-    default: ''
   base-dir:
     description: 'Existing working tree to build the base revision from. Requires `head-dir`.'
+    required: false
+    default: ''
+  head-dir:
+    description: 'Existing working tree to build the head revision from. Requires `base-dir`.'
     required: false
     default: ''
 
@@ -88,10 +88,10 @@ runs:
       shell: bash
       env:
         SUBMODULES: ${{ inputs.submodules }}
-        HEAD_REVISION: ${{ inputs.head-revision }}
         BASE_REVISION: ${{ inputs.base-revision }}
-        HEAD_DIR: ${{ inputs.head-dir }}
+        HEAD_REVISION: ${{ inputs.head-revision }}
         BASE_DIR: ${{ inputs.base-dir }}
+        HEAD_DIR: ${{ inputs.head-dir }}
       run: bash "${GITHUB_ACTION_PATH}/src/validate-inputs.sh"
 
     - name: Resolve comparison revisions
@@ -104,18 +104,18 @@ runs:
         PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
         PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         PUSH_BEFORE_SHA: ${{ github.event.before }}
-        HEAD_REVISION: ${{ inputs.head-revision }}
         BASE_REVISION: ${{ inputs.base-revision }}
+        HEAD_REVISION: ${{ inputs.head-revision }}
       run: bash "${GITHUB_ACTION_PATH}/src/resolve-revisions.sh"
 
     - name: Determine display revisions
       id: display-revisions
       shell: bash
       env:
-        HEAD_DIR: ${{ inputs.head-dir }}
         BASE_DIR: ${{ inputs.base-dir }}
-        RESOLVED_HEAD_REVISION: ${{ steps.resolve-revisions.outputs.head-revision }}
+        HEAD_DIR: ${{ inputs.head-dir }}
         RESOLVED_BASE_REVISION: ${{ steps.resolve-revisions.outputs.base-revision }}
+        RESOLVED_HEAD_REVISION: ${{ steps.resolve-revisions.outputs.head-revision }}
       run: bash "${GITHUB_ACTION_PATH}/src/determine-display-revisions.sh"
 
     - name: Determine artifact names
@@ -125,17 +125,6 @@ runs:
         PR_NUMBER: ${{ github.event.pull_request.number }}
         DISPLAY_HEAD_REVISION: ${{ steps.display-revisions.outputs.head-revision }}
       run: bash "${GITHUB_ACTION_PATH}/src/determine-artifact-names.sh"
-
-    - name: Check out the head revision
-      if: inputs.head-dir == ''
-      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      with:
-        ref: ${{ steps.resolve-revisions.outputs.head-revision }}
-        token: ${{ inputs.github-token }}
-        persist-credentials: false
-        path: head-src
-        fetch-depth: 1
-        submodules: ${{ inputs.submodules }}
 
     - name: Check out the base revision
       if: inputs.head-dir == ''
@@ -148,6 +137,17 @@ runs:
         fetch-depth: 1
         submodules: ${{ inputs.submodules }}
 
+    - name: Check out the head revision
+      if: inputs.head-dir == ''
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        ref: ${{ steps.resolve-revisions.outputs.head-revision }}
+        token: ${{ inputs.github-token }}
+        persist-credentials: false
+        path: head-src
+        fetch-depth: 1
+        submodules: ${{ inputs.submodules }}
+
     - name: Install Typst
       uses: typst-community/setup-typst@fee4b65b091cc546f02ce3be15fad8760f38a108 # v5.3.0
       with:
@@ -157,20 +157,20 @@ runs:
       shell: bash
       run: bash "${GITHUB_ACTION_PATH}/src/install-pdf-diff-tools.sh"
 
-    - name: Build head PDFs
-      shell: bash
-      env:
-        TARGET_FILES: ${{ inputs.target-files }}
-        SOURCE_DIR: ${{ inputs.head-dir || 'head-src' }}
-        OUTPUT_DIR: build/head
-      run: bash "${GITHUB_ACTION_PATH}/src/build-pdfs.sh"
-
     - name: Build base PDFs
       shell: bash
       env:
         TARGET_FILES: ${{ inputs.target-files }}
         SOURCE_DIR: ${{ inputs.base-dir || 'base-src' }}
         OUTPUT_DIR: build/base
+      run: bash "${GITHUB_ACTION_PATH}/src/build-pdfs.sh"
+
+    - name: Build head PDFs
+      shell: bash
+      env:
+        TARGET_FILES: ${{ inputs.target-files }}
+        SOURCE_DIR: ${{ inputs.head-dir || 'head-src' }}
+        OUTPUT_DIR: build/head
       run: bash "${GITHUB_ACTION_PATH}/src/build-pdfs.sh"
 
     - name: Generate PDF diff
@@ -210,8 +210,8 @@ runs:
       shell: bash
       env:
         HEAD_DIR: ${{ inputs.head-dir }}
-        DISPLAY_HEAD_REVISION: ${{ steps.display-revisions.outputs.head-revision }}
         DISPLAY_BASE_REVISION: ${{ steps.display-revisions.outputs.base-revision }}
+        DISPLAY_HEAD_REVISION: ${{ steps.display-revisions.outputs.head-revision }}
         RESULT_TSV: ${{ steps.generate-diff.outputs.result-tsv }}
         HEAD_ARTIFACT_URL: ${{ steps.upload-head-pdfs.outputs.artifact-url }}
         DIFF_ARTIFACT_URL: ${{ steps.upload-diff-pdfs.outputs.artifact-url }}
