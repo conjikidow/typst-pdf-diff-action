@@ -8,7 +8,7 @@ src_dir="${tests_dir}/../src"
 
 work_dir="$(mktemp -d)"
 trap 'rm -rf "${work_dir}"' EXIT
-mkdir -p "${work_dir}/head" "${work_dir}/base"
+mkdir -p "${work_dir}/base" "${work_dir}/head"
 
 status=0
 
@@ -19,7 +19,7 @@ run_case() {
   shift 2
 
   local rc=0
-  env HEAD_DIR='' BASE_DIR='' SUBMODULES='false' HEAD_REVISION='' BASE_REVISION='' "$@" \
+  env BASE_DIR='' HEAD_DIR='' SUBMODULES='false' BASE_REVISION='' HEAD_REVISION='' "$@" \
     bash "${src_dir}/validate-inputs.sh" >/dev/null 2>&1 || rc="$?"
 
   if [ "${rc}" -ne "${expected_rc}" ]; then
@@ -28,18 +28,18 @@ run_case() {
   fi
 }
 
-both_dirs=(HEAD_DIR="${work_dir}/head" BASE_DIR="${work_dir}/base")
+both_dirs=(BASE_DIR="${work_dir}/base" HEAD_DIR="${work_dir}/head")
 
 run_case 'no directories' 0
 run_case 'both directories' 0 "${both_dirs[@]}"
-run_case 'only head-dir' 1 HEAD_DIR="${work_dir}/head"
 run_case 'only base-dir' 1 BASE_DIR="${work_dir}/base"
-run_case 'missing head directory' 1 HEAD_DIR="${work_dir}/absent" BASE_DIR="${work_dir}/base"
-run_case 'missing base directory' 1 HEAD_DIR="${work_dir}/head" BASE_DIR="${work_dir}/absent"
-run_case 'identical directories' 1 HEAD_DIR="${work_dir}/head" BASE_DIR="${work_dir}/head"
+run_case 'only head-dir' 1 HEAD_DIR="${work_dir}/head"
+run_case 'missing base directory' 1 BASE_DIR="${work_dir}/absent" HEAD_DIR="${work_dir}/head"
+run_case 'missing head directory' 1 BASE_DIR="${work_dir}/base" HEAD_DIR="${work_dir}/absent"
+run_case 'identical directories' 1 BASE_DIR="${work_dir}/head" HEAD_DIR="${work_dir}/head"
 run_case 'submodules with directories' 1 "${both_dirs[@]}" SUBMODULES='recursive'
-run_case 'head-revision with directories' 1 "${both_dirs[@]}" HEAD_REVISION='aaa111'
 run_case 'base-revision with directories' 1 "${both_dirs[@]}" BASE_REVISION='bbb222'
-run_case 'revisions without directories' 0 HEAD_REVISION='aaa111' BASE_REVISION='bbb222'
+run_case 'head-revision with directories' 1 "${both_dirs[@]}" HEAD_REVISION='aaa111'
+run_case 'revisions without directories' 0 BASE_REVISION='bbb222' HEAD_REVISION='aaa111'
 
 exit "${status}"

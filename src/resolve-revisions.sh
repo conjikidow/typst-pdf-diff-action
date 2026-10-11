@@ -34,5 +34,5 @@ if [ -z "${resolved_base_revision}" ] || [ "${resolved_base_revision}" = '000000
   exit 1
 fi
 
-write_output 'head-revision' "${resolved_head_revision}"
 write_output 'base-revision' "${resolved_base_revision}"
+write_output 'head-revision' "${resolved_head_revision}"

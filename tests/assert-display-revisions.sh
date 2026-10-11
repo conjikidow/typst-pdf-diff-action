@@ -18,47 +18,47 @@ make_repo() {
   git -C "${repo}" rev-parse HEAD
 }
 
-head_sha="$(make_repo 'head-repo')"
 base_sha="$(make_repo 'base-repo')"
+head_sha="$(make_repo 'head-repo')"
 
 status=0
 
 run_case() {
   local name="$1"
-  local resolved_head="$2"
-  local resolved_base="$3"
-  local head_dir="$4"
-  local base_dir="$5"
-  local expected_head="$6"
-  local expected_base="$7"
+  local resolved_base="$2"
+  local resolved_head="$3"
+  local base_dir="$4"
+  local head_dir="$5"
+  local expected_base="$6"
+  local expected_head="$7"
 
   local outputs="${work_dir}/outputs"
   : >"${outputs}"
 
-  RESOLVED_HEAD_REVISION="${resolved_head}" RESOLVED_BASE_REVISION="${resolved_base}" \
-    HEAD_DIR="${head_dir}" BASE_DIR="${base_dir}" GITHUB_OUTPUT="${outputs}" \
+  RESOLVED_BASE_REVISION="${resolved_base}" RESOLVED_HEAD_REVISION="${resolved_head}" \
+    BASE_DIR="${base_dir}" HEAD_DIR="${head_dir}" GITHUB_OUTPUT="${outputs}" \
     bash "${src_dir}/determine-display-revisions.sh" >/dev/null 2>&1
 
-  local head_revision base_revision
-  head_revision="$(sed -n 's/^head-revision=//p' "${outputs}")"
+  local base_revision head_revision
   base_revision="$(sed -n 's/^base-revision=//p' "${outputs}")"
-
-  if [ "${head_revision}" != "${expected_head}" ]; then
-    log_error "${name}: expected head-revision '${expected_head}', got '${head_revision}'."
-    status=1
-  fi
+  head_revision="$(sed -n 's/^head-revision=//p' "${outputs}")"
 
   if [ "${base_revision}" != "${expected_base}" ]; then
     log_error "${name}: expected base-revision '${expected_base}', got '${base_revision}'."
     status=1
   fi
+
+  if [ "${head_revision}" != "${expected_head}" ]; then
+    log_error "${name}: expected head-revision '${expected_head}', got '${head_revision}'."
+    status=1
+  fi
 }
 
-run_case 'resolved revisions win' 'aaa111' 'bbb222' \
-  "${work_dir}/head-repo" "${work_dir}/base-repo" 'aaa111' 'bbb222'
+run_case 'resolved revisions win' 'bbb222' 'aaa111' \
+  "${work_dir}/base-repo" "${work_dir}/head-repo" 'bbb222' 'aaa111'
 run_case 'revisions read from the working trees' '' '' \
-  "${work_dir}/head-repo" "${work_dir}/base-repo" "${head_sha}" "${base_sha}"
+  "${work_dir}/base-repo" "${work_dir}/head-repo" "${base_sha}" "${head_sha}"
 run_case 'plain directories inside a repository' '' '' \
-  "${work_dir}/head-repo/plain" "${work_dir}/base-repo/plain" 'head' 'base'
+  "${work_dir}/base-repo/plain" "${work_dir}/head-repo/plain" 'base' 'head'
 
 exit "${status}"

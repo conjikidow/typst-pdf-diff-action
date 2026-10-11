@@ -46,8 +46,8 @@ jobs:
         uses: $/
         with:
           target-files: missing.typ
-          head-revision: ${{ env.HEAD_REVISION }}
           base-revision: ${{ env.BASE_REVISION }}
+          head-revision: ${{ env.HEAD_REVISION }}
           post-comment: false
           upload-artifacts: false
 
@@ -106,8 +106,8 @@ jobs:
         uses: $/
         with:
           target-files: sample.typ
-          head-dir: trees/head
           base-dir: trees/base
+          head-dir: trees/head
           post-comment: false
           upload-artifacts: false
 
@@ -128,8 +128,8 @@ jobs:
         uses: $/
         with:
           target-files: sample.typ
-          head-dir: trees/head
           base-dir: trees/base
+          head-dir: trees/head
           post-comment: false
           upload-artifacts: false
 

@@ -23,7 +23,7 @@ run_case() {
   local outputs="${work_dir}/${name}.out"
   local line
 
-  RESULT_TSV="${result_tsv}" DISPLAY_HEAD_REVISION='aaa111' DISPLAY_BASE_REVISION='bbb222' \
+  RESULT_TSV="${result_tsv}" DISPLAY_BASE_REVISION='bbb222' DISPLAY_HEAD_REVISION='aaa111' \
     HEAD_ARTIFACT_URL='' DIFF_ARTIFACT_URL='' HEAD_DIR="${supplied_head_dir}" COMMENT_FILE="${body}" \
     GITHUB_OUTPUT="${outputs}" bash "${src_dir}/build-comment.sh"
 

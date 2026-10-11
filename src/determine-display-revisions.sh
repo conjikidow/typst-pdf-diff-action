@@ -22,8 +22,8 @@ determine_revision() {
   revision="${role}"
 }
 
-determine_revision "${RESOLVED_HEAD_REVISION}" "${HEAD_DIR}" 'head'
-write_output 'head-revision' "${revision}"
-
 determine_revision "${RESOLVED_BASE_REVISION}" "${BASE_DIR}" 'base'
 write_output 'base-revision' "${revision}"
+
+determine_revision "${RESOLVED_HEAD_REVISION}" "${HEAD_DIR}" 'head'
+write_output 'head-revision' "${revision}"
