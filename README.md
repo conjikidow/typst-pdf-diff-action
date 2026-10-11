@@ -11,7 +11,8 @@
 A GitHub Action to generate PDF diffs for Typst documents.
 
 > [!WARNING]
-> This project is in early development. The API may change in future releases.
+> This project is in early development.
+> The API may change in future releases.
 
 ## Features
 
@@ -27,9 +28,8 @@ which the GitHub-hosted Ubuntu runner images provide.
 
 ### Workflow Example
 
-The following workflow runs on PRs, compares the PR head against
-the merge-base (the commit where the PR branched off the base branch),
-uploads the generated PDFs, and posts a PR comment.
+The following workflow runs on PRs, compares the PR head against the merge-base
+(the commit where the PR branched off the base branch), uploads the generated PDFs, and posts a PR comment.
 
 ```yaml
 name: Generate Typst PDF diff
@@ -56,12 +56,11 @@ jobs:
 ```
 
 The examples reference actions by tag for readability.
-For production workflows, consider pinning each action to a full-length commit SHA,
-as [GitHub recommends](https://docs.github.com/en/actions/reference/security/secure-use#using-third-party-actions).
+For production workflows, consider pinning each action to a full-length commit SHA, as [GitHub recommends](https://docs.github.com/en/actions/reference/security/secure-use#using-third-party-actions).
 Releases of this action are immutable, so its own tags are already locked to a single commit.
 
-If your Typst project uses submodules, set `submodules: recursive` and pass a
-token that can access your repository and those submodules.
+If your Typst project uses submodules,
+set `submodules: recursive` and pass a token that can access your repository and those submodules.
 
 ```yaml
 name: Generate Typst PDF diff
@@ -108,11 +107,11 @@ jobs:
 > A GitHub App installation token is scoped to a single account,
 > so it cannot read submodules owned by another user or organization.
 > `actions/checkout` fails the whole job when any submodule cannot be fetched.
-> If your repository and its submodules span several owners, prepare the working trees yourself as described in
-> [Bring Your Own Working Trees](#bring-your-own-working-trees).
+> If your repository and its submodules span several owners,
+> prepare the working trees yourself as described in [Bring Your Own Working Trees](#bring-your-own-working-trees).
 
-For non-PR events, set `base-revision` and `head-revision` explicitly if you do not want
-to rely on the action's automatic revision resolution.
+For non-PR events, set `base-revision` and `head-revision` explicitly
+if you do not want to rely on the action's automatic revision resolution.
 
 ### Permissions
 
@@ -287,9 +286,8 @@ so do not point `base-dir` or `head-dir` inside that directory.
 
 Licensed under either of [MIT license](LICENSE-MIT) or [Apache License, Version 2.0](LICENSE-APACHE) at your option.
 
-Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in this software
-by you, as defined in the Apache-2.0 license, shall be dually licensed as above,
-without any additional terms or conditions.
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in this software by you,
+as defined in the Apache-2.0 license, shall be dually licensed as above, without any additional terms or conditions.
 
 ## Contributing & Feedback
 
