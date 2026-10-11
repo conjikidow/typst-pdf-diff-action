@@ -125,7 +125,7 @@ so what it needs depends on which of them run.
 | `pull-requests: write` | Posting the PR comment and deleting earlier ones. Not needed when `post-comment` is `false`.      |
 
 The default `${{ github.token }}` carries whatever the workflow grants it,
-so grant those scopes in the job, as the first example above does.
+so grant those scopes in the job as the first example above does.
 
 The `permissions:` block does not reach a token you pass yourself.
 A GitHub App installation token, as in the second example above, needs the same access granted to the app itself.
