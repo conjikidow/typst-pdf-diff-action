@@ -15,5 +15,5 @@ for file in ${TARGET_FILES}; do
   fi
 
   mkdir -p "$(dirname "${out}")"
-  typst compile --root "${SOURCE_DIR}" "${source_file}" "${out}"
+  typst compile --root="${SOURCE_DIR}" "${source_file}" "${out}"
 done
