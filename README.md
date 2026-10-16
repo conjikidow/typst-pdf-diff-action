@@ -219,7 +219,7 @@ jobs:
           PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          sha=$(gh api "repos/${GITHUB_REPOSITORY}/compare/${PR_BASE_SHA}...${PR_HEAD_SHA}" --jq='.merge_base_commit.sha')
+          sha="$(gh api "repos/${GITHUB_REPOSITORY}/compare/${PR_BASE_SHA}...${PR_HEAD_SHA}" --jq='.merge_base_commit.sha')"
           echo "sha=${sha}" >> "${GITHUB_OUTPUT}"
 
       - name: Check out the base revision
