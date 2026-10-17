@@ -8,13 +8,13 @@ determine_revision() {
   local dir="$2"
   local role="$3"
 
-  if [ -n "${resolved}" ]; then
+  if [[ -n ${resolved} ]]; then
     revision="${resolved}"
     return
   fi
 
   # Without this guard, rev-parse would walk up and report a parent repository.
-  if [ -e "${dir}/.git" ] && revision="$(git -C "${dir}" rev-parse HEAD 2>/dev/null)"; then
+  if [[ -e "${dir}/.git" ]] && revision="$(git -C "${dir}" rev-parse HEAD 2>/dev/null)"; then
     return
   fi
 

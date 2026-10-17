@@ -10,7 +10,7 @@ diff_count=0
 no_diff_count=0
 
 revision_note=''
-if [ -n "${HEAD_DIR}" ]; then
+if [[ -n ${HEAD_DIR} ]]; then
   revision_note=' (caller-supplied working tree)'
 fi
 
@@ -31,20 +31,20 @@ done <"${RESULT_TSV}"
   echo
   echo "- Base revision: \`${DISPLAY_BASE_REVISION}\`${revision_note}"
   echo "- Head revision: \`${DISPLAY_HEAD_REVISION}\`${revision_note}"
-  if [ -n "${HEAD_ARTIFACT_URL}" ]; then
+  if [[ -n ${HEAD_ARTIFACT_URL} ]]; then
     echo "- Head PDFs artifact: [typst-head-pdfs](${HEAD_ARTIFACT_URL})"
   fi
-  if [ "${diff_count}" -gt 0 ] && [ -n "${DIFF_ARTIFACT_URL}" ]; then
+  if [[ ${diff_count} -gt 0 && -n ${DIFF_ARTIFACT_URL} ]]; then
     echo "- Diff PDFs artifact: [typst-diff-pdfs](${DIFF_ARTIFACT_URL})"
   fi
-  if [ "${diff_count}" -gt 0 ]; then
-    if [ "${has_missing}" = 'true' ]; then
+  if [[ ${diff_count} -gt 0 ]]; then
+    if [[ ${has_missing} == 'true' ]]; then
       echo "- PDF diff: Generated for ${diff_count} file(s); skipped ${missing_count} missing file(s)."
     else
       echo "- PDF diff: Differences detected in ${diff_count} file(s)."
     fi
   else
-    if [ "${has_missing}" = 'true' ]; then
+    if [[ ${has_missing} == 'true' ]]; then
       echo '- PDF diff: Skipped for files missing on either the base or head revision.'
     else
       echo '- PDF diff: No differences detected.'

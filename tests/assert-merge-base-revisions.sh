@@ -15,12 +15,12 @@ expected_base="$(git merge-base "${PR_BASE_SHA}" "${PR_HEAD_SHA}")"
 actual_base="$(git -C "${base_dir}" rev-parse HEAD)"
 actual_head="$(git -C "${head_dir}" rev-parse HEAD)"
 
-if [ "${actual_base}" != "${expected_base}" ]; then
+if [[ ${actual_base} != "${expected_base}" ]]; then
   log_error "${base_dir} holds ${actual_base}, expected the merge-base ${expected_base}."
   status=1
 fi
 
-if [ "${actual_head}" != "${PR_HEAD_SHA}" ]; then
+if [[ ${actual_head} != "${PR_HEAD_SHA}" ]]; then
   log_error "${head_dir} holds ${actual_head}, expected ${PR_HEAD_SHA}."
   status=1
 fi

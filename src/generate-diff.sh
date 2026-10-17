@@ -17,11 +17,11 @@ for file in ${TARGET_FILES}; do
 
   mkdir -p "$(dirname "${diff_pdf}")"
 
-  if [ ! -f "${base_pdf}" ]; then
+  if [[ ! -f ${base_pdf} ]]; then
     printf '%s\tmissing-base\t\n' "${file}" >>"${result_tsv}"
     continue
   fi
-  if [ ! -f "${head_pdf}" ]; then
+  if [[ ! -f ${head_pdf} ]]; then
     printf '%s\tmissing-head\t\n' "${file}" >>"${result_tsv}"
     continue
   fi
@@ -35,12 +35,12 @@ for file in ${TARGET_FILES}; do
   diff_rc="$?"
   set -e
 
-  if [ "${diff_rc}" -eq 0 ]; then
+  if [[ ${diff_rc} -eq 0 ]]; then
     printf '%s\tno-diff\t\n' "${file}" >>"${result_tsv}"
     rm -f "${diff_pdf}"
     continue
   fi
-  if [ "${diff_rc}" -ne 1 ]; then
+  if [[ ${diff_rc} -ne 1 ]]; then
     log_error "diff-pdf failed for ${file}"
     exit "${diff_rc}"
   fi

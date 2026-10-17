@@ -22,7 +22,7 @@ run_case() {
   env BASE_DIR='' HEAD_DIR='' SUBMODULES='false' BASE_REVISION='' HEAD_REVISION='' "$@" \
     bash "${src_dir}/validate-inputs.sh" >/dev/null 2>&1 || rc="$?"
 
-  if [ "${rc}" -ne "${expected_rc}" ]; then
+  if [[ ${rc} -ne ${expected_rc} ]]; then
     log_error "${name}: expected exit ${expected_rc}, got ${rc}."
     status=1
   fi
