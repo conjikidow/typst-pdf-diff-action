@@ -5,7 +5,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
 repo_name="${GITHUB_REPOSITORY#*/}"
 
-if [ "${GITHUB_EVENT_NAME}" = 'pull_request' ] && [ -n "${PR_NUMBER}" ]; then
+if [[ ${GITHUB_EVENT_NAME} == 'pull_request' && -n ${PR_NUMBER} ]]; then
   suffix="pr-${PR_NUMBER}"
 else
   head_revision_short="${DISPLAY_HEAD_REVISION:0:7}"

@@ -43,12 +43,12 @@ run_case() {
   base_revision="$(sed -n 's/^base-revision=//p' "${outputs}")"
   head_revision="$(sed -n 's/^head-revision=//p' "${outputs}")"
 
-  if [ "${base_revision}" != "${expected_base}" ]; then
+  if [[ ${base_revision} != "${expected_base}" ]]; then
     log_error "${name}: expected base-revision '${expected_base}', got '${base_revision}'."
     status=1
   fi
 
-  if [ "${head_revision}" != "${expected_head}" ]; then
+  if [[ ${head_revision} != "${expected_head}" ]]; then
     log_error "${name}: expected head-revision '${expected_head}', got '${head_revision}'."
     status=1
   fi

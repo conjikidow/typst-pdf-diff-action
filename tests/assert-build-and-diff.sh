@@ -33,17 +33,17 @@ run_case() {
   local has_diff
   has_diff="$(sed -n 's/^has-diff=//p' "${outputs}")"
 
-  if [ "${has_diff}" != "${expected_has_diff}" ]; then
+  if [[ ${has_diff} != "${expected_has_diff}" ]]; then
     log_error "${name}: expected has-diff to be ${expected_has_diff}, got '${has_diff}'."
     status=1
   fi
 
-  if [ "${expected_has_diff}" = 'true' ] && [ ! -f "${build}/diff/sample.pdf" ]; then
+  if [[ ${expected_has_diff} == 'true' && ! -f "${build}/diff/sample.pdf" ]]; then
     log_error "${name}: expected a diff PDF to be generated."
     status=1
   fi
 
-  if [ "${expected_has_diff}" = 'false' ] && [ -f "${build}/diff/sample.pdf" ]; then
+  if [[ ${expected_has_diff} == 'false' && -f "${build}/diff/sample.pdf" ]]; then
     log_error "${name}: expected no diff PDF to be left behind."
     status=1
   fi

@@ -3,7 +3,7 @@ set -euo pipefail
 
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
-if [ "${GITHUB_EVENT_NAME}" != 'pull_request' ] || [ -z "${PR_NUMBER}" ]; then
+if [[ ${GITHUB_EVENT_NAME} != 'pull_request' || -z ${PR_NUMBER} ]]; then
   log_warn 'Skipping the pull request comment because this is not a pull_request event.'
   exit 0
 fi
@@ -11,7 +11,7 @@ fi
 require_cmd gh
 require_cmd jq
 
-if [ ! -f "${COMMENT_FILE}" ]; then
+if [[ ! -f ${COMMENT_FILE} ]]; then
   log_warn "Skipping the pull request comment because ${COMMENT_FILE} was not generated."
   exit 0
 fi
@@ -22,7 +22,7 @@ list_endpoint="repos/{owner}/{repo}/issues/${PR_NUMBER}/comments"
 run_comment_call() {
   local status=0
 
-  if [ "${COMMENT_MODE}" = 'replace' ]; then
+  if [[ ${COMMENT_MODE} == 'replace' ]]; then
     if ! existing_ids="$(gh api "${list_endpoint}" --paginate \
       --jq=".[] | select(.body | contains(\"${marker}\")) | .id")"; then
       return 1
@@ -33,7 +33,7 @@ run_comment_call() {
         status=1
       fi
     done
-  elif [ "${COMMENT_MODE}" != 'append' ]; then
+  elif [[ ${COMMENT_MODE} != 'append' ]]; then
     log_error "Unsupported comment mode: ${COMMENT_MODE}"
     exit 1
   fi
@@ -50,7 +50,7 @@ if run_comment_call; then
   exit 0
 fi
 
-if [ "$(normalize_bool "${FAIL_ON_COMMENT_ERROR}")" = 'true' ]; then
+if [[ "$(normalize_bool "${FAIL_ON_COMMENT_ERROR}")" == 'true' ]]; then
   log_error 'Failed to post the pull request comment or to delete earlier ones.'
   exit 1
 fi
