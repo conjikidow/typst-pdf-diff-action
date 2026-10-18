@@ -33,9 +33,6 @@ run_comment_call() {
         status=1
       fi
     done
-  elif [[ ${COMMENT_MODE} != 'append' ]]; then
-    log_error "Unsupported comment mode: ${COMMENT_MODE}"
-    exit 1
   fi
 
   body_json="$(jq --raw-input --slurp '{body: .}' "${COMMENT_FILE}")"
@@ -50,7 +47,7 @@ if run_comment_call; then
   exit 0
 fi
 
-if [[ "$(normalize_bool "${FAIL_ON_COMMENT_ERROR}")" == 'true' ]]; then
+if [[ ${FAIL_ON_COMMENT_ERROR} == 'true' ]]; then
   log_error 'Failed to post the pull request comment or to delete earlier ones.'
   exit 1
 fi

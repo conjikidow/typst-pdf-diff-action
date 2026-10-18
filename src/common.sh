@@ -22,16 +22,3 @@ write_output() {
   local value="$2"
   echo "${key}=${value}" >>"${GITHUB_OUTPUT}"
 }
-
-normalize_bool() {
-  local value="$1"
-  case "${value}" in
-  true | false)
-    printf '%s\n' "${value}"
-    ;;
-  *)
-    log_error "Invalid boolean value: ${value}"
-    exit 1
-    ;;
-  esac
-}

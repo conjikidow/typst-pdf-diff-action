@@ -157,7 +157,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Assert that invalid working tree inputs are rejected
+      - name: Assert that invalid inputs are rejected
         run: bash tests/assert-input-validation.sh
 
   test-display-revisions:
