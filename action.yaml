@@ -90,6 +90,10 @@ runs:
         SUBMODULES: ${{ inputs.submodules }}
         BASE_REVISION: ${{ inputs.base-revision }}
         HEAD_REVISION: ${{ inputs.head-revision }}
+        POST_COMMENT: ${{ inputs.post-comment }}
+        COMMENT_MODE: ${{ inputs.comment-mode }}
+        FAIL_ON_COMMENT_ERROR: ${{ inputs.fail-on-comment-error }}
+        UPLOAD_ARTIFACTS: ${{ inputs.upload-artifacts }}
         BASE_DIR: ${{ inputs.base-dir }}
         HEAD_DIR: ${{ inputs.head-dir }}
       run: bash "${GITHUB_ACTION_PATH}/src/validate-inputs.sh"
