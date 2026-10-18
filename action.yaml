@@ -230,6 +230,6 @@ runs:
         GH_REPO: ${{ github.repository }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
         COMMENT_MODE: ${{ inputs.comment-mode }}
-        FAIL_ON_COMMENT_ERROR: ${{ inputs.fail-on-comment-error }}
+        FAIL_ON_COMMENT_ERROR: ${{ inputs.fail-on-comment-error == 'true' }}
         COMMENT_FILE: ${{ steps.build-comment.outputs.comment-file }}
       run: bash "${GITHUB_ACTION_PATH}/src/post-comment.sh"

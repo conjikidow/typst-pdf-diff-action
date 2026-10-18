@@ -47,7 +47,7 @@ if run_comment_call; then
   exit 0
 fi
 
-if [[ ${FAIL_ON_COMMENT_ERROR,,} == 'true' ]]; then
+if [[ ${FAIL_ON_COMMENT_ERROR} == 'true' ]]; then
   log_error 'Failed to post the pull request comment or to delete earlier ones.'
   exit 1
 fi
