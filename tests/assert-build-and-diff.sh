@@ -19,7 +19,7 @@ run_case() {
   local build="${work_dir}/${name}"
   local outputs="${build}/outputs"
   mkdir -p "${build}"
-  : >"${outputs}"
+  : > "${outputs}"
 
   TARGET_FILES='sample.typ' SOURCE_DIR="${tests_dir}/fixtures/base" OUTPUT_DIR="${build}/base" \
     bash "${src_dir}/build-pdfs.sh"

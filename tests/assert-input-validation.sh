@@ -21,7 +21,7 @@ run_case() {
   local rc=0
   env SUBMODULES='false' BASE_REVISION='' HEAD_REVISION='' POST_COMMENT='true' COMMENT_MODE='replace' \
     FAIL_ON_COMMENT_ERROR='false' UPLOAD_ARTIFACTS='true' BASE_DIR='' HEAD_DIR='' "$@" \
-    bash "${src_dir}/validate-inputs.sh" >/dev/null 2>&1 || rc="$?"
+    bash "${src_dir}/validate-inputs.sh" > /dev/null 2>&1 || rc="$?"
 
   if [[ ${rc} -ne ${expected_rc} ]]; then
     log_error "${name}: expected exit ${expected_rc}, got ${rc}."

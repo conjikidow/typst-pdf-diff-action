@@ -16,14 +16,14 @@ fi
 
 while IFS=$'\t' read -r _file status _diff_pdf; do
   case "${status}" in
-  has-diff) diff_count="$((diff_count + 1))" ;;
-  no-diff) no_diff_count="$((no_diff_count + 1))" ;;
-  missing-base | missing-head)
-    has_missing='true'
-    missing_count="$((missing_count + 1))"
-    ;;
+    has-diff) diff_count="$((diff_count + 1))" ;;
+    no-diff) no_diff_count="$((no_diff_count + 1))" ;;
+    missing-base | missing-head)
+      has_missing='true'
+      missing_count="$((missing_count + 1))"
+      ;;
   esac
-done <"${RESULT_TSV}"
+done < "${RESULT_TSV}"
 
 {
   echo "${marker}"
@@ -55,14 +55,14 @@ done <"${RESULT_TSV}"
   echo '| --- | --- |'
   while IFS=$'\t' read -r file status _diff_pdf; do
     case "${status}" in
-    has-diff) status_text='diff found' ;;
-    no-diff) status_text='no diff' ;;
-    missing-base) status_text='base missing' ;;
-    missing-head) status_text='head missing' ;;
-    *) status_text="${status}" ;;
+      has-diff) status_text='diff found' ;;
+      no-diff) status_text='no diff' ;;
+      missing-base) status_text='base missing' ;;
+      missing-head) status_text='head missing' ;;
+      *) status_text="${status}" ;;
     esac
     printf "| \`%s\` | %s |\n" "${file}" "${status_text}"
-  done <"${RESULT_TSV}"
-} >"${COMMENT_FILE}"
+  done < "${RESULT_TSV}"
+} > "${COMMENT_FILE}"
 
 write_output 'comment-file' "${COMMENT_FILE}"

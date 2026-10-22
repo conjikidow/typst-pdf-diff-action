@@ -6,22 +6,22 @@ source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 # Accept the spellings that getBooleanInput of @actions/core accepts.
 validate_bool() {
   case "$1" in
-  true | True | TRUE | false | False | FALSE)
-    return 0
-    ;;
-  *)
-    return 1
-    ;;
+    true | True | TRUE | false | False | FALSE)
+      return 0
+      ;;
+    *)
+      return 1
+      ;;
   esac
 }
 
 # actions/checkout compares the submodules mode case-insensitively.
 case "${SUBMODULES,,}" in
-false | true | recursive) ;;
-*)
-  log_error "Invalid submodules value '${SUBMODULES}': expected 'false', 'true', or 'recursive'."
-  exit 1
-  ;;
+  false | true | recursive) ;;
+  *)
+    log_error "Invalid submodules value '${SUBMODULES}': expected 'false', 'true', or 'recursive'."
+    exit 1
+    ;;
 esac
 
 if ! validate_bool "${POST_COMMENT}"; then
@@ -30,11 +30,11 @@ if ! validate_bool "${POST_COMMENT}"; then
 fi
 
 case "${COMMENT_MODE}" in
-replace | append) ;;
-*)
-  log_error "Invalid comment-mode value '${COMMENT_MODE}': expected 'replace' or 'append'."
-  exit 1
-  ;;
+  replace | append) ;;
+  *)
+    log_error "Invalid comment-mode value '${COMMENT_MODE}': expected 'replace' or 'append'."
+    exit 1
+    ;;
 esac
 
 if ! validate_bool "${FAIL_ON_COMMENT_ERROR}"; then
