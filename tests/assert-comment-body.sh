@@ -10,7 +10,7 @@ work_dir="$(mktemp -d)"
 trap 'rm -rf "${work_dir}"' EXIT
 
 result_tsv="${work_dir}/diff-results.tsv"
-printf '%s\thas-diff\t%s\n' 'main.typ' 'build/diff/main.pdf' >"${result_tsv}"
+printf '%s\thas-diff\t%s\n' 'main.typ' 'build/diff/main.pdf' > "${result_tsv}"
 
 status=0
 

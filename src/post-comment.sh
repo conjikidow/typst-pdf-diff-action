@@ -36,7 +36,7 @@ run_comment_call() {
   fi
 
   body_json="$(jq --raw-input --slurp '{body: .}' "${COMMENT_FILE}")"
-  if ! gh api "${list_endpoint}" --method=POST --input=- <<<"${body_json}"; then
+  if ! gh api "${list_endpoint}" --method=POST --input=- <<< "${body_json}"; then
     status=1
   fi
 

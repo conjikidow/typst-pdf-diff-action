@@ -5,7 +5,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
 mkdir -p "${DIFF_DIR}" "${META_DIR}"
 result_tsv="${META_DIR}/diff-results.tsv"
-: >"${result_tsv}"
+: > "${result_tsv}"
 
 has_diff='false'
 
@@ -18,11 +18,11 @@ for file in ${TARGET_FILES}; do
   mkdir -p "$(dirname "${diff_pdf}")"
 
   if [[ ! -f ${base_pdf} ]]; then
-    printf '%s\tmissing-base\t\n' "${file}" >>"${result_tsv}"
+    printf '%s\tmissing-base\t\n' "${file}" >> "${result_tsv}"
     continue
   fi
   if [[ ! -f ${head_pdf} ]]; then
-    printf '%s\tmissing-head\t\n' "${file}" >>"${result_tsv}"
+    printf '%s\tmissing-head\t\n' "${file}" >> "${result_tsv}"
     continue
   fi
 
@@ -36,7 +36,7 @@ for file in ${TARGET_FILES}; do
   set -e
 
   if [[ ${diff_rc} -eq 0 ]]; then
-    printf '%s\tno-diff\t\n' "${file}" >>"${result_tsv}"
+    printf '%s\tno-diff\t\n' "${file}" >> "${result_tsv}"
     rm -f "${diff_pdf}"
     continue
   fi
@@ -46,7 +46,7 @@ for file in ${TARGET_FILES}; do
   fi
 
   has_diff='true'
-  printf '%s\thas-diff\t%s\n' "${file}" "${diff_pdf}" >>"${result_tsv}"
+  printf '%s\thas-diff\t%s\n' "${file}" "${diff_pdf}" >> "${result_tsv}"
 done
 
 write_output 'has-diff' "${has_diff}"

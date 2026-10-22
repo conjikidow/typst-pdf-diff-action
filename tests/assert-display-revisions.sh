@@ -33,11 +33,11 @@ run_case() {
   local expected_head="$7"
 
   local outputs="${work_dir}/outputs"
-  : >"${outputs}"
+  : > "${outputs}"
 
   RESOLVED_BASE_REVISION="${resolved_base}" RESOLVED_HEAD_REVISION="${resolved_head}" \
     BASE_DIR="${base_dir}" HEAD_DIR="${head_dir}" GITHUB_OUTPUT="${outputs}" \
-    bash "${src_dir}/determine-display-revisions.sh" >/dev/null 2>&1
+    bash "${src_dir}/determine-display-revisions.sh" > /dev/null 2>&1
 
   local base_revision head_revision
   base_revision="$(sed -n 's/^base-revision=//p' "${outputs}")"
