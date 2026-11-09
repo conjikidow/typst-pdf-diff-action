@@ -213,3 +213,34 @@ jobs:
 
       - name: Assert that supplied working trees are marked in the comment
         run: bash tests/assert-comment-body.sh
+
+  check-test-results:
+    name: Check test results
+    needs:
+      - test-explicit-revisions
+      - test-merge-base-resolution
+      - test-supplied-working-trees
+      - test-input-validation
+      - test-display-revisions
+      - test-build-and-diff
+      - test-comment-body
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check the job results
+        env:
+          JOB_RESULTS: ${{ toJSON(needs) }}
+        run: |
+          failed_jobs="$(jq --raw-output '
+              to_entries[]
+              | select(.value.result != "success" and .value.result != "skipped")
+              | "\(.key) finished with \(.value.result)."
+            ' <<< "${JOB_RESULTS}")"
+          if [[ -n ${failed_jobs} ]]; then
+            while IFS= read -r failed_job; do
+              echo "::error title=check-test-results::${failed_job}"
+            done <<< "${failed_jobs}"
+            exit 1
+          fi
