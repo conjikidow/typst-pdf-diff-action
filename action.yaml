@@ -210,7 +210,6 @@ runs:
 
     - name: Build pull request comment body
       id: build-comment
-      if: inputs.post-comment == 'true'
       shell: bash
       env:
         HEAD_DIR: ${{ inputs.head-dir }}
@@ -221,6 +220,12 @@ runs:
         DIFF_ARTIFACT_URL: ${{ steps.upload-diff-pdfs.outputs.artifact-url }}
         COMMENT_FILE: build/meta/pr-comment.md
       run: bash "${GITHUB_ACTION_PATH}/src/build-comment.sh"
+
+    - name: Write job summary
+      shell: bash
+      env:
+        COMMENT_FILE: ${{ steps.build-comment.outputs.comment-file }}
+      run: cat "${COMMENT_FILE}" >> "${GITHUB_STEP_SUMMARY}"
 
     - name: Post pull request comment
       if: inputs.post-comment == 'true'

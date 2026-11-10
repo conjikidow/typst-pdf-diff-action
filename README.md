@@ -150,7 +150,7 @@ which is why that example zeroes it with `permissions: {}`.
 
 > [!NOTE]
 > `post-comment: true` is intended for `pull_request` events.
-> On other events, the action skips the PR comment.
+> On other events, the action skips the PR comment, and the results are left in the job summary.
 
 #### Advanced Inputs
 
